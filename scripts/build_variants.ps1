@@ -75,28 +75,35 @@ Copy-PathIfExists -SourcePath (Join-Path $projectRootResolved "requirements.txt"
 Copy-PathIfExists -SourcePath (Join-Path $projectRootResolved "pyproject.toml") -DestinationPath (Join-Path $userStage "pyproject.toml")
 Copy-PathIfExists -SourcePath (Join-Path $projectRootResolved "README.md") -DestinationPath (Join-Path $userStage "README.md")
 Copy-PathIfExists -SourcePath (Join-Path $projectRootResolved "START_ARQON_PROTECTION.cmd") -DestinationPath (Join-Path $userStage "START_ARQON_PROTECTION.cmd")
+Copy-PathIfExists -SourcePath (Join-Path $projectRootResolved "START_ARQON_USER_MODE.cmd") -DestinationPath (Join-Path $userStage "START_ARQON_USER_MODE.cmd")
+Copy-PathIfExists -SourcePath (Join-Path $projectRootResolved "START_ARQON_BROWSER_GUARD.cmd") -DestinationPath (Join-Path $userStage "START_ARQON_BROWSER_GUARD.cmd")
 Copy-PathIfExists -SourcePath (Join-Path $projectRootResolved "STOP_ARQON_PROTECTION.cmd") -DestinationPath (Join-Path $userStage "STOP_ARQON_PROTECTION.cmd")
 
 New-Item -Path (Join-Path $userStage "config") -ItemType Directory -Force | Out-Null
 Copy-PathIfExists -SourcePath (Join-Path $projectRootResolved "config\user-mode.yml") -DestinationPath (Join-Path $userStage "config\user-mode.yml")
+Copy-PathIfExists -SourcePath (Join-Path $projectRootResolved "config\browser-guard.yml") -DestinationPath (Join-Path $userStage "config\browser-guard.yml")
 
 New-Item -Path (Join-Path $userStage "scripts") -ItemType Directory -Force | Out-Null
 Copy-PathIfExists -SourcePath (Join-Path $projectRootResolved "scripts\run_user_console.ps1") -DestinationPath (Join-Path $userStage "scripts\run_user_console.ps1")
 Copy-PathIfExists -SourcePath (Join-Path $projectRootResolved "scripts\start_user_protection.ps1") -DestinationPath (Join-Path $userStage "scripts\start_user_protection.ps1")
 Copy-PathIfExists -SourcePath (Join-Path $projectRootResolved "scripts\stop_user_protection.ps1") -DestinationPath (Join-Path $userStage "scripts\stop_user_protection.ps1")
+Copy-PathIfExists -SourcePath (Join-Path $projectRootResolved "scripts\stop_arqon_runtime.ps1") -DestinationPath (Join-Path $userStage "scripts\stop_arqon_runtime.ps1")
+Copy-PathIfExists -SourcePath (Join-Path $projectRootResolved "scripts\switch_mode.ps1") -DestinationPath (Join-Path $userStage "scripts\switch_mode.ps1")
 
 $userReadme = @"
 ARQON USER BUILD
 
 How to run:
 1) Extract this archive to any folder.
-2) Double click START_ARQON_PROTECTION.cmd
+2) Choose mode:
+   - START_ARQON_USER_MODE.cmd (API/dashboard disabled)
+   - START_ARQON_BROWSER_GUARD.cmd (API enabled for browser extension)
 3) Wait for first-run setup to finish.
 
 What it does:
-- Runs ARQON protection in user mode.
-- Admin panel/API is disabled.
+- Runs ARQON protection in selected mode.
 - Terminal shows running status and latest protection actions.
+- Browser Guard mode keeps user/admin API keys separated.
 
 To stop:
 - Double click STOP_ARQON_PROTECTION.cmd
@@ -115,6 +122,8 @@ $adminItems = @(
   "pyproject.toml",
   "README.md",
   "START_ARQON_PROTECTION.cmd",
+  "START_ARQON_USER_MODE.cmd",
+  "START_ARQON_BROWSER_GUARD.cmd",
   "STOP_ARQON_PROTECTION.cmd"
 )
 foreach ($item in $adminItems) {

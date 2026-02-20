@@ -1,7 +1,7 @@
 @echo off
 setlocal
 set SCRIPT_DIR=%~dp0
-powershell -NoProfile -ExecutionPolicy Bypass -File "%SCRIPT_DIR%scripts\switch_mode.ps1" -Mode USER
+powershell -NoProfile -ExecutionPolicy Bypass -File "%SCRIPT_DIR%scripts\switch_mode.ps1" -Mode BROWSER_GUARD
 if not "%ERRORLEVEL%"=="0" (
   echo.
   echo ARQON monitor stopped or interrupted.
