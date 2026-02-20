@@ -320,6 +320,8 @@ def load_config(config_path: str | Path | None = None) -> AppConfig:
     project_root = detect_project_root()
     target = Path(config_path) if config_path else (project_root / "config" / "default.yml")
     target = target.resolve()
+    if config_path is not None and not target.exists():
+        raise ConfigValidationError(f"Configuration file not found: {target}")
 
     loaded: dict[str, Any] = {}
     if target.exists():

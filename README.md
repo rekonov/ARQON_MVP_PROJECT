@@ -101,6 +101,8 @@ Output:
 
 ## Core CLI
 
+Run CLI commands from project root (`C:\Users\cvrsxd\Desktop\ARQON`) or pass an absolute `--config` path.
+
 ```powershell
 # Run full agent
 arqon-agent --config config/default.yml run
