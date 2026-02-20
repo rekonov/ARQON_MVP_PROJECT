@@ -73,6 +73,7 @@ New-Item -Path $adminStage -ItemType Directory -Force | Out-Null
 Copy-PathIfExists -SourcePath (Join-Path $projectRootResolved "src") -DestinationPath (Join-Path $userStage "src")
 Copy-PathIfExists -SourcePath (Join-Path $projectRootResolved "requirements.txt") -DestinationPath (Join-Path $userStage "requirements.txt")
 Copy-PathIfExists -SourcePath (Join-Path $projectRootResolved "pyproject.toml") -DestinationPath (Join-Path $userStage "pyproject.toml")
+Copy-PathIfExists -SourcePath (Join-Path $projectRootResolved "README.md") -DestinationPath (Join-Path $userStage "README.md")
 Copy-PathIfExists -SourcePath (Join-Path $projectRootResolved "START_ARQON_PROTECTION.cmd") -DestinationPath (Join-Path $userStage "START_ARQON_PROTECTION.cmd")
 Copy-PathIfExists -SourcePath (Join-Path $projectRootResolved "STOP_ARQON_PROTECTION.cmd") -DestinationPath (Join-Path $userStage "STOP_ARQON_PROTECTION.cmd")
 
