@@ -1,0 +1,120 @@
+:root {
+  --bg: #101823;
+  --card: #172332;
+  --line: rgba(171, 212, 236, 0.3);
+  --text: #dcf2fa;
+  --muted: #9ab8c8;
+  --accent: #34d399;
+  --accent-2: #fb923c;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body.ext-body {
+  margin: 0;
+  background: radial-gradient(circle at 18% 12%, rgba(52, 211, 153, 0.18), transparent 36%),
+    radial-gradient(circle at 85% 0%, rgba(251, 146, 60, 0.14), transparent 34%), var(--bg);
+  color: var(--text);
+  font-family: "Segoe UI", Tahoma, sans-serif;
+  min-width: 320px;
+}
+
+.ext-card {
+  margin: 14px;
+  background: rgba(23, 35, 50, 0.94);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 14px;
+}
+
+h1 {
+  margin: 0 0 8px;
+  font-size: 1.1rem;
+}
+
+.ext-muted {
+  margin: 0 0 10px;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+label {
+  display: block;
+  margin-top: 9px;
+  margin-bottom: 4px;
+  font-size: 0.86rem;
+  color: var(--muted);
+}
+
+input[type="text"],
+input[type="password"] {
+  width: 100%;
+  min-height: 36px;
+  border-radius: 9px;
+  border: 1px solid var(--line);
+  background: rgba(8, 14, 20, 0.8);
+  color: var(--text);
+  padding: 8px 10px;
+}
+
+.ext-check {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 8px 0;
+}
+
+.ext-row {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.ext-btn {
+  min-height: 36px;
+  border-radius: 9px;
+  border: 1px solid rgba(52, 211, 153, 0.6);
+  background: linear-gradient(130deg, var(--accent), #2dd4bf);
+  color: #072419;
+  font-weight: 600;
+  padding: 0 12px;
+  cursor: pointer;
+}
+
+.ext-btn-secondary {
+  background: rgba(23, 35, 50, 0.9);
+  color: var(--text);
+  border-color: var(--line);
+}
+
+.ext-pre {
+  margin-top: 10px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: rgba(8, 14, 20, 0.75);
+  padding: 9px;
+  white-space: pre-wrap;
+  font-family: Consolas, "Courier New", monospace;
+  font-size: 0.78rem;
+}
+
+.ext-url {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 8px;
+  background: rgba(8, 14, 20, 0.6);
+  word-break: break-all;
+}
+
+.ext-risk {
+  margin-top: 8px;
+  color: var(--accent-2);
+  font-weight: 700;
+}
+
+.popup .ext-card {
+  margin: 8px;
+}
+

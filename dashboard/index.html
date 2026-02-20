@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ARQON Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/dashboard/styles.css" />
+  </head>
+  <body>
+    <div class="bg-gradient"></div>
+    <main class="layout">
+      <header class="hero">
+        <p class="badge">ARQON Control Surface</p>
+        <h1>Realtime security telemetry and response</h1>
+        <p class="subtitle">
+          Local-only dashboard for risk checks, quarantine visibility and policy monitoring.
+        </p>
+      </header>
+
+      <section class="panel settings">
+        <h2>Connection</h2>
+        <div class="field-row">
+          <label for="api-key">API Key</label>
+          <input id="api-key" type="password" placeholder="X-ARQON-Key" />
+        </div>
+        <div class="field-row">
+          <label for="admin-key">Admin Key</label>
+          <input id="admin-key" type="password" placeholder="X-ARQON-Admin-Key (optional)" />
+          <button id="save-key" class="btn">Save</button>
+        </div>
+        <div class="field-row">
+          <button id="refresh-all" class="btn btn-secondary">Refresh</button>
+          <span id="connection-state" class="status">Checking...</span>
+        </div>
+      </section>
+
+      <section class="grid">
+        <article class="panel">
+          <h2>Agent Health</h2>
+          <pre id="health-card" class="mono">Loading...</pre>
+        </article>
+        <article class="panel">
+          <h2>Summary</h2>
+          <pre id="summary-card" class="mono">Loading...</pre>
+        </article>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head">
+          <h2>Self Check</h2>
+          <button id="refresh-self-check" class="btn btn-secondary">Run</button>
+        </div>
+        <pre id="self-check-card" class="mono">Loading...</pre>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head">
+          <h2>Incident Export</h2>
+          <button id="export-incidents-btn" class="btn btn-secondary">Download</button>
+        </div>
+        <div class="export-grid">
+          <label class="field-col">
+            <span>Format</span>
+            <select id="export-format">
+              <option value="json">JSON</option>
+              <option value="csv">CSV</option>
+            </select>
+          </label>
+          <label class="field-col">
+            <span>Min Level</span>
+            <select id="export-min-level">
+              <option value="warning">warning</option>
+              <option value="error">error</option>
+              <option value="critical">critical</option>
+              <option value="info">info</option>
+              <option value="debug">debug</option>
+            </select>
+          </label>
+          <label class="field-col">
+            <span>Limit</span>
+            <input id="export-limit" type="number" min="1" max="1000" value="300" />
+          </label>
+        </div>
+        <pre id="export-result" class="mono result">No export yet.</pre>
+      </section>
+
+      <section class="grid">
+        <article class="panel">
+          <h2>URL Scan</h2>
+          <div class="stack">
+            <input id="scan-url-input" type="text" placeholder="https://example.com/path" />
+            <button id="scan-url-btn" class="btn">Scan URL</button>
+            <pre id="scan-url-result" class="mono result">No scan yet.</pre>
+          </div>
+        </article>
+        <article class="panel">
+          <h2>File Scan</h2>
+          <div class="stack">
+            <input
+              id="scan-file-input"
+              type="text"
+              placeholder="C:\\Users\\you\\Downloads\\installer.exe"
+            />
+            <label class="checkbox">
+              <input id="scan-file-quarantine" type="checkbox" />
+              Quarantine if blocked
+            </label>
+            <button id="scan-file-btn" class="btn">Scan File</button>
+            <pre id="scan-file-result" class="mono result">No scan yet.</pre>
+          </div>
+        </article>
+      </section>
+
+      <section class="grid">
+        <article class="panel">
+          <div class="panel-head">
+            <h2>Recent Events</h2>
+            <button id="refresh-events" class="btn btn-secondary">Refresh</button>
+          </div>
+          <div id="events-list" class="list"></div>
+        </article>
+        <article class="panel">
+          <div class="panel-head">
+            <h2>Quarantine</h2>
+            <button id="refresh-quarantine" class="btn btn-secondary">Refresh</button>
+          </div>
+          <div id="quarantine-list" class="list"></div>
+        </article>
+      </section>
+    </main>
+    <script src="/dashboard/app.js"></script>
+  </body>
+</html>

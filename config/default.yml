@@ -1,0 +1,148 @@
+agent:
+  poll_interval_sec: 2.0
+  startup_firewall_sync: true
+paths:
+  downloads_dir: '%USERPROFILE%\Downloads'
+  quarantine_dir: ./quarantine
+  state_dir: ./state
+  log_file: ./state/agent.log
+monitoring:
+  process_monitor: true
+  download_monitor: true
+watchdog:
+  enabled: true
+  check_interval_sec: 2.0
+  max_restart_attempts: 3
+rules:
+  blocked_process_names:
+  - xmrig.exe
+  - mimikatz.exe
+  - processhacker.exe
+  lolbin_process_names:
+  - powershell.exe
+  - pwsh.exe
+  - cmd.exe
+  - mshta.exe
+  - rundll32.exe
+  - regsvr32.exe
+  - wscript.exe
+  - cscript.exe
+  - wmic.exe
+  - certutil.exe
+  - bitsadmin.exe
+  - msbuild.exe
+  suspicious_cmdline_patterns:
+  - (?i)(-enc|--encodedcommand)\s+[a-z0-9+/=]{20,}
+  - (?i)(downloadstring|invoke-webrequest|iwr|curl)\b
+  - (?i)(frombase64string|iex|invoke-expression)\b
+  - (?i)(-windowstyle\s+hidden|-w\s+hidden)\b
+  - (?i)\b(bypass|unrestricted)\b
+  blocked_extensions:
+  - .scr
+  - .pif
+  - .hta
+  - .js
+  - .jse
+  - .vbs
+  - .vbe
+  - .wsf
+  - .bat
+  - .cmd
+  - .ps1
+  - .lnk
+  blocked_hashes: []
+  allowed_hashes: []
+  archive_scan_enabled: true
+  archive_scan_max_entries: 256
+  archive_scan_max_total_uncompressed_mb: 128
+  script_analysis_enabled: true
+  script_analysis_max_bytes: 262144
+  suspicious_script_patterns:
+  - (?i)invoke-webrequest|downloadstring|webclient
+  - (?i)frombase64string|encodedcommand|-enc\b
+  - (?i)iex\s*\(|invoke-expression
+  - (?i)set-mppreference|add-mppreference
+  - (?i)reg\s+add\s+.*\\run\b|schtasks(\.exe)?\s+/create
+  - (?i)rundll32|regsvr32|mshta
+  suspicious_name_patterns:
+  - (?i)invoice.*\.(zip|rar|7z|exe)$
+  - (?i)payment.*\.(exe|scr|hta)$
+  blocked_url_patterns:
+  - (?i)https?://[^/]*\.onion
+  suspicious_url_patterns:
+  - (?i)(login|verify|wallet|seed|password).*(update|security|support)
+  - (?i)(free|bonus|airdrop).*(claim|gift)
+  high_risk_download_extensions:
+  - .exe
+  - .msi
+  - .scr
+  - .hta
+  - .ps1
+network:
+  blocked_hosts: []
+  firewall_rule_prefix: ARQON_GUARD_BLOCK_
+api:
+  enabled: true
+  host: 127.0.0.1
+  port: 8765
+  auth_key: ''
+  auth_key_ref: api_user_key
+  admin_key: ''
+  admin_key_ref: api_admin_key
+  body_limit_bytes: 65536
+  rate_limit_enabled: true
+  rate_limit_requests: 120
+  rate_limit_window_sec: 60
+  admin_rate_limit_requests: 80
+privacy:
+  available_profiles:
+  - telemetry_off
+  - basic_anonymous
+reputation:
+  enabled: true
+  provider: local
+  timeout_sec: 2.5
+  local:
+    blocked_domains:
+    - downloadcrack.com
+    - malware.test
+    trusted_domains:
+    - microsoft.com
+    - google.com
+    suspicious_keywords:
+    - free-crack
+    - keygen
+    - wallet-drain
+  remote:
+    enabled: false
+    endpoint: ''
+    api_key: ''
+  cache:
+    enabled: true
+    ttl_sec: 900
+    max_entries: 4096
+risk:
+  block_threshold: 70
+  warn_threshold: 40
+policy_updates:
+  enabled: false
+  url: ''
+  interval_sec: 1800
+  apply_on_startup: true
+  private_key_file: C:/Users/cvrsxd/Desktop/ARQON_SECRETS/policy-signing-private.pem
+  public_keyring_file: ./config/policy-signing-public.keys.json
+  secret_file: ''
+  keyring_file: ''
+secrets:
+  store_file: C:/Users/cvrsxd/Desktop/ARQON_SECRETS/secure-secrets.json
+retention:
+  enabled: true
+  interval_sec: 3600
+  max_event_lines: 20000
+  max_audit_lines: 20000
+  max_quarantine_log_lines: 10000
+  max_quarantine_files: 500
+  max_quarantine_age_days: 30
+  max_update_backups: 20
+  max_policy_backups: 120
+  max_privacy_backups: 120

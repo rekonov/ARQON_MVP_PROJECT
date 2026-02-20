@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ARQON Browser Guard Settings</title>
+    <link rel="stylesheet" href="extension.css" />
+  </head>
+  <body class="ext-body">
+    <main class="ext-card">
+      <h1>ARQON Browser Guard</h1>
+      <p class="ext-muted">Configure the extension to connect to your local ARQON API.</p>
+
+      <label>API Endpoint</label>
+      <input id="endpoint" type="text" placeholder="http://127.0.0.1:8765" />
+
+      <label>API Key</label>
+      <input id="api-key" type="password" placeholder="change-me-arqon" />
+
+      <label class="ext-check">
+        <input id="monitor-tabs" type="checkbox" />
+        Monitor tab URLs
+      </label>
+      <label class="ext-check">
+        <input id="monitor-downloads" type="checkbox" />
+        Monitor downloads
+      </label>
+      <label class="ext-check">
+        <input id="block-on-warn" type="checkbox" />
+        Treat warnings as blocks
+      </label>
+
+      <div class="ext-row">
+        <button id="save" class="ext-btn">Save</button>
+        <button id="test" class="ext-btn ext-btn-secondary">Test API</button>
+      </div>
+
+      <pre id="result" class="ext-pre">Ready.</pre>
+    </main>
+    <script src="options.js"></script>
+  </body>
+</html>
+
