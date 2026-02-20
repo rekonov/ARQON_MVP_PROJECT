@@ -74,16 +74,34 @@ powershell -ExecutionPolicy Bypass -File .\scripts\run_user_console.ps1
 Or double-click:
 
 - `START_ARQON_PROTECTION.cmd`
+- `START_ARQON_USER_MODE.cmd`
 
-Stop user-mode:
+Stop all ARQON runtime processes:
 
 ```powershell
-powershell -ExecutionPolicy Bypass -File .\scripts\stop_user_protection.ps1
+powershell -ExecutionPolicy Bypass -File .\scripts\stop_arqon_runtime.ps1
 ```
 
 Or double-click:
 
 - `STOP_ARQON_PROTECTION.cmd`
+
+## Mode switch (one command)
+
+Switch between user-only mode and browser-guard mode from one script.
+
+```powershell
+# USER: API/dashboard disabled
+powershell -ExecutionPolicy Bypass -File .\scripts\switch_mode.ps1 -Mode USER
+
+# BROWSER_GUARD: API enabled for extension, admin key stays separate
+powershell -ExecutionPolicy Bypass -File .\scripts\switch_mode.ps1 -Mode BROWSER_GUARD
+```
+
+Quick launchers:
+
+- `START_ARQON_USER_MODE.cmd`
+- `START_ARQON_BROWSER_GUARD.cmd`
 
 ## Build variants
 
@@ -238,10 +256,16 @@ If enabled, updater periodically fetches signed pack from `url` and applies only
 
 Folder: `browser-extension/chromium/`
 
+Run ARQON in `BROWSER_GUARD` mode first:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\scripts\switch_mode.ps1 -Mode BROWSER_GUARD
+```
+
 1. Open `chrome://extensions`.
 2. Enable `Developer mode`.
 3. Click `Load unpacked`.
-4. Select `C:\Users\cvrsxd\Desktop\ARQON\browser-extension\chromium`.
+4. Select `C:\Users\cvrsxd\Desktop\ARQON\workspace\repos\dev\browser-extension\chromium`.
 5. Open extension settings and set API endpoint/key if changed.
 
 ## Tray launcher (Windows)

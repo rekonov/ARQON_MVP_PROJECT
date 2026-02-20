@@ -1,0 +1,40 @@
+paths:
+  downloads_dir: '%USERPROFILE%\Downloads'
+  quarantine_dir: '%LOCALAPPDATA%\ARQON\quarantine'
+  state_dir: '%LOCALAPPDATA%\ARQON\state'
+  log_file: '%LOCALAPPDATA%\ARQON\state\agent.log'
+rules:
+  blocked_url_patterns:
+  - (?i)https?://[^/]*\.onion
+  - (?i)https?://(?:[^/]+\.)?malware\.test(?:/|$)
+  - (?i)https?://[^\s]+\.(exe|msi|scr|hta|ps1)(\?.*)?$
+  suspicious_url_patterns:
+  - (?i)(login|verify|wallet|seed|password).*(update|security|support)
+  - (?i)(free|bonus|airdrop).*(claim|gift)
+reputation:
+  enabled: true
+  provider: local
+  local:
+    blocked_domains:
+    - malware.test
+    - downloadcrack.com
+    trusted_domains:
+    - microsoft.com
+    - google.com
+    suspicious_keywords:
+    - free-crack
+    - keygen
+    - wallet-drain
+risk:
+  block_threshold: 70
+  warn_threshold: 40
+api:
+  enabled: true
+  host: 127.0.0.1
+  port: 8765
+  auth_key: ''
+  admin_key: ''
+  auth_key_ref: api_user_key
+  admin_key_ref: api_admin_key
+secrets:
+  store_file: '%LOCALAPPDATA%\ARQON\secure-secrets.json'
