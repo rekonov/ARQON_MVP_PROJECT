@@ -1,0 +1,24 @@
+{
+  "manifest_version": 3,
+  "name": "ARQON Browser Guard",
+  "version": "0.1.0",
+  "description": "Checks URLs and downloads against the local ARQON API.",
+  "permissions": ["storage", "tabs", "downloads", "notifications"],
+  "host_permissions": ["<all_urls>", "http://127.0.0.1/*"],
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "options_page": "options.html",
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "ARQON Guard"
+  },
+  "web_accessible_resources": [
+    {
+      "resources": ["warning.html", "warning.js", "extension.css"],
+      "matches": ["<all_urls>"]
+    }
+  ]
+}
+

@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ARQON Warning</title>
+    <link rel="stylesheet" href="extension.css" />
+  </head>
+  <body class="ext-body warning">
+    <main class="ext-card">
+      <h1>ARQON blocked this page</h1>
+      <p class="ext-muted">
+        The local security engine classified this navigation as high risk.
+      </p>
+      <div id="warning-target" class="ext-url"></div>
+      <div id="warning-risk" class="ext-risk"></div>
+      <pre id="warning-reasons" class="ext-pre"></pre>
+      <div class="ext-row">
+        <button id="go-back" class="ext-btn ext-btn-secondary">Back</button>
+        <button id="proceed-once" class="ext-btn">Proceed once</button>
+      </div>
+    </main>
+    <script src="warning.js"></script>
+  </body>
+</html>
+

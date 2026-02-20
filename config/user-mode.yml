@@ -1,0 +1,13 @@
+paths:
+  downloads_dir: '%USERPROFILE%\Downloads'
+  quarantine_dir: '%LOCALAPPDATA%\ARQON\quarantine'
+  state_dir: '%LOCALAPPDATA%\ARQON\state'
+  log_file: '%LOCALAPPDATA%\ARQON\state\agent.log'
+api:
+  enabled: false
+  auth_key: ''
+  admin_key: ''
+  auth_key_ref: api_user_key
+  admin_key_ref: api_admin_key
+secrets:
+  store_file: '%LOCALAPPDATA%\ARQON\secure-secrets.json'
