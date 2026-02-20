@@ -3,6 +3,31 @@ paths:
   quarantine_dir: '%LOCALAPPDATA%\ARQON\quarantine'
   state_dir: '%LOCALAPPDATA%\ARQON\state'
   log_file: '%LOCALAPPDATA%\ARQON\state\agent.log'
+rules:
+  blocked_url_patterns:
+  - (?i)https?://[^/]*\.onion
+  - (?i)https?://(?:[^/]+\.)?malware\.test(?:/|$)
+  suspicious_url_patterns:
+  - (?i)(login|verify|wallet|seed|password).*(update|security|support)
+  - (?i)(free|bonus|airdrop).*(claim|gift)
+  - (?i)https?://[^\s]+\.(exe|msi|scr|hta|ps1)(\?.*)?$
+reputation:
+  enabled: true
+  provider: local
+  local:
+    blocked_domains:
+    - malware.test
+    - downloadcrack.com
+    trusted_domains:
+    - microsoft.com
+    - google.com
+    suspicious_keywords:
+    - free-crack
+    - keygen
+    - wallet-drain
+risk:
+  block_threshold: 50
+  warn_threshold: 30
 api:
   enabled: false
   auth_key: ''
