@@ -18,12 +18,16 @@ Local browser-side companion for ARQON API.
 
 ## Required backend
 
-Run ARQON API:
+Run ARQON API (recommended: Browser Guard mode):
 
 ```powershell
-arqon-agent --config config/default.yml run
+powershell -ExecutionPolicy Bypass -File .\scripts\switch_mode.ps1 -Mode BROWSER_GUARD
 ```
 
 Default endpoint: `http://127.0.0.1:8765`  
-Default header: `X-ARQON-Key: change-me-arqon`
+Header: `X-ARQON-Key: <api_user_key>`
 
+`Test API` in extension UI validates:
+
+- `/health` connectivity.
+- `/v1/url/evaluate` authorization with current API key.

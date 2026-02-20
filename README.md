@@ -82,6 +82,10 @@ Stop all ARQON runtime processes:
 powershell -ExecutionPolicy Bypass -File .\scripts\stop_arqon_runtime.ps1
 ```
 
+ARQON runtime now enforces a single active instance via lock file:
+
+- `%LOCALAPPDATA%\ARQON\state\arqon-runtime.lock`
+
 Or double-click:
 
 - `STOP_ARQON_PROTECTION.cmd`
@@ -269,6 +273,9 @@ powershell -ExecutionPolicy Bypass -File .\scripts\switch_mode.ps1 -Mode BROWSER
 3. Click `Load unpacked`.
 4. Select `C:\Users\cvrsxd\Desktop\ARQON\workspace\repos\dev\browser-extension\chromium`.
 5. Open extension settings and set API endpoint/key if changed.
+6. Click `Test API`:
+   - `Health: HTTP 200` means local API is reachable.
+   - `Auth check: HTTP 200` means API key is valid and URL protection calls will work.
 
 ## Tray launcher (Windows)
 
