@@ -98,6 +98,8 @@ powershell -ExecutionPolicy Bypass -File .\scripts\switch_mode.ps1 -Mode USER
 powershell -ExecutionPolicy Bypass -File .\scripts\switch_mode.ps1 -Mode BROWSER_GUARD
 ```
 
+`BROWSER_GUARD` start prints ready-to-use `api_user_key` in terminal.
+
 Quick launchers:
 
 - `START_ARQON_USER_MODE.cmd`

@@ -104,6 +104,7 @@ What it does:
 - Runs ARQON protection in selected mode.
 - Terminal shows running status and latest protection actions.
 - Browser Guard mode keeps user/admin API keys separated.
+- Browser Guard mode prints extension API key on startup.
 
 To stop:
 - Double click STOP_ARQON_PROTECTION.cmd

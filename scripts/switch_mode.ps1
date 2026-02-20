@@ -34,8 +34,54 @@ function Invoke-Checked {
   }
 }
 
+function Resolve-PythonExecutable {
+  param(
+    [string]$ProjectRootPath,
+    [string]$ExplicitPython
+  )
+
+  if (-not [string]::IsNullOrWhiteSpace($ExplicitPython)) {
+    return Resolve-ExistingPath -PathValue $ExplicitPython -Description "Python executable"
+  }
+
+  $venvPython = Join-Path $ProjectRootPath ".venv\Scripts\python.exe"
+  if (Test-Path -Path $venvPython -PathType Leaf) {
+    return (Resolve-Path -Path $venvPython).Path
+  }
+
+  $pythonCmd = Get-Command python -ErrorAction SilentlyContinue
+  if ($null -eq $pythonCmd) {
+    throw "Python executable not found. Install Python 3.11+ or pass -PythonPath."
+  }
+  return $pythonCmd.Source
+}
+
+function Read-SecretValue {
+  param(
+    [string]$PythonExecutable,
+    [string]$ConfigFile,
+    [string]$SecretName
+  )
+
+  $raw = & $PythonExecutable -m arqon_guardian.cli --config $ConfigFile config secret-store get --name $SecretName
+  if ($LASTEXITCODE -ne $null -and [int]$LASTEXITCODE -ne 0) {
+    throw "Failed to read secret '$SecretName' from store."
+  }
+  $text = ($raw -join "`n").Trim()
+  if ([string]::IsNullOrWhiteSpace($text)) {
+    return ""
+  }
+  try {
+    $parsed = $text | ConvertFrom-Json -ErrorAction Stop
+    return [string]$parsed.value
+  } catch {
+    return ""
+  }
+}
+
 $projectRootResolved = Resolve-ExistingPath -PathValue $ProjectRoot -Description "Project root" -Directory
 $modeNormalized = $Mode.ToUpperInvariant()
+$python = Resolve-PythonExecutable -ProjectRootPath $projectRootResolved -ExplicitPython $PythonPath
 
 $configResolved = switch ($modeNormalized) {
   "USER" { Resolve-ExistingPath -PathValue (Join-Path $projectRootResolved "config\user-mode.yml") -Description "USER config" }
@@ -63,11 +109,23 @@ if (-not [string]::IsNullOrWhiteSpace($PythonPath)) {
 }
 
 if ($modeNormalized -eq "BROWSER_GUARD") {
+  Invoke-Checked `
+    -FilePath $python `
+    -Arguments @("-m", "arqon_guardian.cli", "--config", $configResolved, "config", "ensure-keys", "--config-mode", "refs") `
+    -Step "config ensure-keys (browser_guard)"
+
+  $apiUserKey = Read-SecretValue -PythonExecutable $python -ConfigFile $configResolved -SecretName "api_user_key"
   Write-Host ""
   Write-Host "Browser Guard mode enabled."
   Write-Host "Extension endpoint: http://127.0.0.1:8765"
-  Write-Host "Get API key:"
-  Write-Host "python -m arqon_guardian.cli --config `"$configResolved`" config secret-store get --name api_user_key"
+  if (-not [string]::IsNullOrWhiteSpace($apiUserKey)) {
+    Write-Host "Extension API key (api_user_key):"
+    Write-Host $apiUserKey
+  } else {
+    Write-Host "Failed to auto-read api_user_key."
+    Write-Host "Get API key manually:"
+    Write-Host "python -m arqon_guardian.cli --config `"$configResolved`" config secret-store get --name api_user_key"
+  }
   Write-Host ""
 }
 
