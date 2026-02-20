@@ -36,6 +36,7 @@ from arqon_guardian.quarantine import QuarantineManager
 from arqon_guardian.reputation import ReputationService
 from arqon_guardian.retention import run_retention
 from arqon_guardian.rules import RuleEvaluator
+from arqon_guardian.runtime_lock import RuntimeLock, RuntimeLockError
 from arqon_guardian.secret_store import SecretStore
 from arqon_guardian.signature import SignatureInspector
 from arqon_guardian.update_pack import (
@@ -294,12 +295,30 @@ def main(argv: list[str] | None = None) -> int:
         audit_logger = AuditLogger(config.state_dir)
 
         if args.command == "run":
-            agent = SecurityAgent(config)
-            agent.run_forever()
-            return 0
+            lock = RuntimeLock(config.state_dir / "arqon-runtime.lock")
+            try:
+                lock.acquire()
+            except RuntimeLockError as error:
+                _print_json({"error": "runtime_already_running", "details": str(error)})
+                return 12
+            try:
+                agent = SecurityAgent(config)
+                agent.run_forever()
+                return 0
+            finally:
+                lock.release()
 
         if args.command == "api-run":
-            return _handle_api_run(config, evaluator, audit_logger)
+            lock = RuntimeLock(config.state_dir / "arqon-runtime.lock")
+            try:
+                lock.acquire()
+            except RuntimeLockError as error:
+                _print_json({"error": "runtime_already_running", "details": str(error)})
+                return 12
+            try:
+                return _handle_api_run(config, evaluator, audit_logger)
+            finally:
+                lock.release()
 
         if args.command == "scan-file":
             return _handle_scan_file(config, evaluator, args.path, args.quarantine)

@@ -52,11 +52,65 @@ async function getSettings() {
 
 async function testConnection() {
   const settings = await getSettings();
-  const response = await fetch(`${settings.endpoint}/health`);
-  if (!response.ok) {
-    throw new Error(`health_http_${response.status}`);
+  const endpoint = normalizeEndpoint(settings.endpoint);
+  if (!endpoint) {
+    throw new Error("endpoint_empty");
   }
-  return await response.json();
+
+  const healthResponse = await fetchWithTimeout(`${endpoint}/health`, { method: "GET" }, 3500);
+  if (!healthResponse.ok) {
+    throw new Error(`health_http_${healthResponse.status}`);
+  }
+
+  let healthJson = {};
+  try {
+    healthJson = await healthResponse.json();
+  } catch (_error) {
+    healthJson = {};
+  }
+
+  const evaluateResponse = await fetchWithTimeout(
+    `${endpoint}/v1/url/evaluate`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-ARQON-Key": settings.apiKey || "",
+      },
+      body: JSON.stringify({ url: "https://example.com/" }),
+    },
+    3500,
+  );
+
+  if (evaluateResponse.status === 401) {
+    throw new Error("api_key_unauthorized");
+  }
+  if (!evaluateResponse.ok) {
+    throw new Error(`evaluate_http_${evaluateResponse.status}`);
+  }
+
+  let evaluateJson = {};
+  try {
+    evaluateJson = await evaluateResponse.json();
+  } catch (_error) {
+    evaluateJson = {};
+  }
+
+  return {
+    protection_ready: true,
+    endpoint,
+    health: {
+      ok: true,
+      status: healthResponse.status,
+      service: healthJson.service || "",
+    },
+    evaluate: {
+      ok: true,
+      status: evaluateResponse.status,
+      action: evaluateJson.action || "unknown",
+      risk_score: Number(evaluateJson.risk_score || 0),
+    },
+  };
 }
 
 function shouldIgnoreUrl(url) {
@@ -138,30 +192,46 @@ async function handleDownload(item) {
 }
 
 async function evaluateUrl(settings, url) {
-  const endpoint = (settings.endpoint || "").replace(/\/+$/, "");
+  const endpoint = normalizeEndpoint(settings.endpoint);
   if (!endpoint) return null;
 
-  const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), 3500);
-
   try {
-    const response = await fetch(`${endpoint}/v1/url/evaluate`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "X-ARQON-Key": settings.apiKey || "",
+    const response = await fetchWithTimeout(
+      `${endpoint}/v1/url/evaluate`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-ARQON-Key": settings.apiKey || "",
+        },
+        body: JSON.stringify({ url }),
       },
-      body: JSON.stringify({ url }),
-      signal: controller.signal,
-    });
+      3500,
+    );
     if (!response.ok) {
       return null;
     }
     return await response.json();
   } catch (_error) {
     return null;
+  }
+}
+
+function normalizeEndpoint(value) {
+  return (value || "").trim().replace(/\/+$/, "");
+}
+
+async function fetchWithTimeout(url, options, timeoutMs) {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), timeoutMs);
+  try {
+    return await fetch(url, { ...options, signal: controller.signal });
+  } catch (error) {
+    if (error && error.name === "AbortError") {
+      throw new Error("request_timeout");
+    }
+    throw error;
   } finally {
     clearTimeout(timeout);
   }
 }
-
