@@ -7,10 +7,10 @@ rules:
   blocked_url_patterns:
   - (?i)https?://[^/]*\.onion
   - (?i)https?://(?:[^/]+\.)?malware\.test(?:/|$)
+  - (?i)https?://[^\s]+\.(exe|msi|scr|hta|ps1)(\?.*)?$
   suspicious_url_patterns:
   - (?i)(login|verify|wallet|seed|password).*(update|security|support)
   - (?i)(free|bonus|airdrop).*(claim|gift)
-  - (?i)https?://[^\s]+\.(exe|msi|scr|hta|ps1)(\?.*)?$
 reputation:
   enabled: true
   provider: local
@@ -26,8 +26,8 @@ reputation:
     - keygen
     - wallet-drain
 risk:
-  block_threshold: 50
-  warn_threshold: 30
+  block_threshold: 70
+  warn_threshold: 40
 api:
   enabled: false
   auth_key: ''
