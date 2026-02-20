@@ -1,0 +1,4 @@
+psutil==6.1.1
+watchdog==5.0.3
+PyYAML==6.0.2
+cryptography==44.0.1
