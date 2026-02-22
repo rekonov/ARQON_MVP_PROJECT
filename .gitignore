@@ -4,8 +4,12 @@ __pycache__/
 .mypy_cache/
 .pytest_cache/
 .ruff_cache/
+Thumbs.db
+Desktop.ini
+.DS_Store
 dist/
 release/
 state/
 quarantine/
+config/state/
 *.egg-info/
