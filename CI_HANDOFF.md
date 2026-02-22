@@ -133,3 +133,32 @@ Notes/Risks:
 
 Commit message (preferred):
 - chore(repo): clean tracked runtime artifacts and harden ignore rules
+
+## 2026-02-22 22:19 (local)
+
+Author: @codex
+Status: blocked
+Target branch: main
+Repo scope: both
+Type: chore
+
+Summary:
+- performed full local cleanup pass for both repositories (`dev`, `public`) to remove runtime/cache artifacts while keeping project structure intact
+- rebuilt local virtual environments and reinstalled runtime/test dependencies after cleanup
+- re-ran baseline validation in both repos (compileall, pytest, self-check with skipped bind check)
+
+Changed files:
+- CI_HANDOFF.md (dev)
+
+Checks required:
+- compileall
+- pytest
+- self-check
+
+Notes/Risks:
+- all local checks are green; self-check warning is expected because `--skip-bind-check` is used
+- `CI_HANDOFF.md` remains `dev`-only by process rule
+- GitHub operations are currently blocked, so no push was performed in this batch
+
+Commit message (preferred):
+- chore(handoff): record full local cleanup and validation while github is blocked
