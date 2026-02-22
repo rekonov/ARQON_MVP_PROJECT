@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="640" viewBox="0 0 1280 640" role="img" aria-label="ARQON MVP project cover">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#060606"/>
+      <stop offset="100%" stop-color="#171717"/>
+    </linearGradient>
+  </defs>
+  <rect width="1280" height="640" fill="url(#g)"/>
+  <rect x="80" y="80" width="1120" height="480" fill="none" stroke="#444" stroke-width="2"/>
+  <text x="120" y="285" fill="#ffffff" font-family="Segoe UI, Arial, sans-serif" font-size="84" font-weight="700">ARQON MVP PROJECT</text>
+  <text x="120" y="350" fill="#d4d4d4" font-family="Segoe UI, Arial, sans-serif" font-size="34">Local-First Windows Security Agent</text>
+  <text x="120" y="400" fill="#b3b3b3" font-family="Segoe UI, Arial, sans-serif" font-size="30">Threat Detection • Policy Control • Incident Response</text>
+  <text x="120" y="500" fill="#8c8c8c" font-family="Segoe UI, Arial, sans-serif" font-size="24">github.com/rekonov/ARQON_MVP_PROJECT</text>
+</svg>
