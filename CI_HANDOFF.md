@@ -162,3 +162,31 @@ Notes/Risks:
 
 Commit message (preferred):
 - chore(handoff): record full local cleanup and validation while github is blocked
+
+## 2026-02-22 23:30 (local)
+
+Author: @codex
+Status: ready-for-check
+Target branch: main
+Repo scope: both
+Type: chore
+
+Summary:
+- migrated working layout to a single root folder `ARQON_PROJECT` with only two project folders: `dev` and `public`
+- moved repositories from `ARQON\\workspace\\repos\\dev|public` to `ARQON_PROJECT\\dev|public` without modifying git history
+- removed legacy container folder `ARQON` as requested
+
+Changed files:
+- CI_HANDOFF.md (dev)
+
+Checks required:
+- repository open check from new paths
+- git status check in both repos
+
+Notes/Risks:
+- no source-code files were changed in this step; only filesystem structure changed
+- `CI_HANDOFF.md` remains dev-only by process rule
+- GitHub is blocked, so no push was performed
+
+Commit message (preferred):
+- chore(structure): move repos to ARQON_PROJECT and remove legacy ARQON root
