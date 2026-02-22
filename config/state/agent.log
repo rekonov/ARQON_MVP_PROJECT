@@ -1,8 +1,0 @@
-2026-02-19 23:16:38 | INFO | lume_guardian.modules.firewall_manager | Firewall sync done: added=0 removed=0 total=0
-2026-02-19 23:16:38 | INFO | lume_guardian.agent | Firewall initial sync: {'added': 0, 'removed': 0, 'total': 0}
-2026-02-19 23:16:38 | INFO | lume_guardian.modules.process_monitor | Process monitor started
-2026-02-19 23:16:38 | INFO | lume_guardian.modules.download_monitor | Download monitor started: C:\Users\cvrsxd\Downloads
-2026-02-19 23:16:38 | INFO | lume_guardian.agent | Security agent started
-2026-02-19 23:16:40 | INFO | lume_guardian.modules.process_monitor | Process monitor stopped
-2026-02-19 23:16:40 | INFO | lume_guardian.modules.download_monitor | Download monitor stopped
-2026-02-19 23:16:40 | INFO | lume_guardian.agent | Security agent stopped
