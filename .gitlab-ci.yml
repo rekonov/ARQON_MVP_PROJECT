@@ -68,7 +68,7 @@ promote_to_public:
     - job: self_check_smoke
       optional: true
   rules:
-    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
+    - if: '$CI_PROJECT_PATH == "reekonovv/arqon-dev" && $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
       when: manual
     - when: never
   before_script:
@@ -81,5 +81,3 @@ promote_to_public:
     - git fetch "$PUBLIC_REMOTE" main
     - git merge --no-edit --allow-unrelated-histories -X ours FETCH_HEAD || { echo "Merge conflict during promote. Resolve dev/public divergence manually."; exit 1; }
     - git push "$PUBLIC_REMOTE" HEAD:main
-
-
