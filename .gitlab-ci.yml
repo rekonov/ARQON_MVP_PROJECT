@@ -4,6 +4,7 @@ workflow:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
 
 stages:
+  - meta
   - validate
 
 default:
@@ -22,6 +23,11 @@ cache:
 before_script:
   - python -m pip install --upgrade pip
   - pip install -e ".[dev]"
+
+pipeline_smoke:
+  stage: meta
+  script:
+    - echo "Pipeline started for $CI_COMMIT_SHORT_SHA"
 
 baseline_checks:
   stage: validate
