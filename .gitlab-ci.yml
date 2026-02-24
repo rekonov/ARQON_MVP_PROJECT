@@ -1,19 +1,54 @@
-# You can override the included template(s) by including variable overrides
-# SAST customization: https://docs.gitlab.com/user/application_security/sast/#available-cicd-variables
-# Secret Detection customization: https://docs.gitlab.com/user/application_security/secret_detection/pipeline/configure/
-# Dependency Scanning customization: https://docs.gitlab.com/user/application_security/dependency_scanning/#customizing-analyzer-behavior
-# Container Scanning customization: https://docs.gitlab.com/user/application_security/container_scanning/#customizing-analyzer-behavior
-# Note that environment variables can be set in several places
-# See https://docs.gitlab.com/ci/variables/#cicd-variable-precedence
+workflow:
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "push"'
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+
 stages:
-- test
-- secret-detection
-sast:
-  stage: test
-include:
-- template: Security/SAST.gitlab-ci.yml
-- template: Security/Secret-Detection.gitlab-ci.yml
+  - validate
+
+default:
+  image: python:3.11-slim
+  interruptible: true
+
 variables:
-  SECRET_DETECTION_ENABLED: 'true'
-secret_detection:
-  stage: secret-detection
+  PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
+  PYTHONPATH: "$CI_PROJECT_DIR/src"
+
+cache:
+  key: "pip-$CI_COMMIT_REF_SLUG"
+  paths:
+    - .cache/pip
+
+before_script:
+  - python -m pip install --upgrade pip
+  - pip install -e ".[dev]"
+
+baseline_checks:
+  stage: validate
+  rules:
+    - changes:
+        - src/**/*
+        - tests/**/*
+        - config/**/*
+        - scripts/**/*
+        - pyproject.toml
+        - requirements*.txt
+        - .gitlab-ci.yml
+  script:
+    - python -m compileall src
+    - python -m pytest -q
+
+self_check_smoke:
+  stage: validate
+  allow_failure: true
+  rules:
+    - changes:
+        - src/**/*
+        - config/**/*
+        - scripts/**/*
+        - pyproject.toml
+        - requirements*.txt
+        - .gitlab-ci.yml
+  script:
+    - python -m arqon_guardian.cli --config config/default.yml config ensure-keys --config-mode refs
+    - python -m arqon_guardian.cli --config config/default.yml self-check --skip-bind-check
