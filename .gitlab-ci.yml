@@ -73,6 +73,9 @@ promote_to_public:
     - apk add --no-cache git
   script:
     - if [ -z "${ARQON_PUBLIC_PUSH_TOKEN:-}" ]; then echo "Missing ARQON_PUBLIC_PUSH_TOKEN variable"; exit 1; fi
+    - PUBLIC_REMOTE="https://oauth2:${ARQON_PUBLIC_PUSH_TOKEN}@gitlab.com/reekonovv/arqon-dev-public.git"
     - git config --global user.name "arqon-ci"
     - git config --global user.email "ci@arqon.local"
-    - git push "https://oauth2:${ARQON_PUBLIC_PUSH_TOKEN}@gitlab.com/reekonovv/arqon-dev-public.git" HEAD:main
+    - git fetch "$PUBLIC_REMOTE" main
+    - git merge --no-edit FETCH_HEAD || { echo "Merge conflict during promote. Resolve dev/public divergence manually."; exit 1; }
+    - git push "$PUBLIC_REMOTE" HEAD:main
