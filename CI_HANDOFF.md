@@ -5,16 +5,16 @@ Use this file to pass ARQON changes from development to CI/CD.
 ## Roles
 
 - Developer: code changes, local verification, handoff entry.
-- CI/CD engineer: CI checks, artifact build, GitHub push.
+- CI/CD engineer: CI checks, promote flow control, GitLab push.
 
 ## Repositories
 
 - Private admin repo (`dev`):
-  - Local path: `C:\Users\cvrsxd\Desktop\ARQON\workspace\repos\dev`
-  - Remote: `https://github.com/rekonov/arqon-admin-private.git`
+  - Local path: `C:\Users\cvrsxd\Desktop\PROJECTS\ARQON_PROJECT\dev`
+  - Remote: `https://gitlab.com/reekonovv/arqon-dev.git`
 - Public user repo (`public`):
-  - Local path: `C:\Users\cvrsxd\Desktop\ARQON\workspace\repos\public`
-  - Remote: `https://github.com/rekonov/arqon-user-public.git`
+  - Local path: `C:\Users\cvrsxd\Desktop\PROJECTS\ARQON_PROJECT\public`
+  - Remote: `https://gitlab.com/reekonovv/arqon-dev-public.git`
 
 ## Sync Policy
 
@@ -190,3 +190,39 @@ Notes/Risks:
 
 Commit message (preferred):
 - chore(structure): move repos to ARQON_PROJECT and remove legacy ARQON root
+
+
+## 2026-02-24 22:41 (local)
+
+Author: @codex
+Status: ready-for-check
+Target branch: main
+Repo scope: both
+Type: ci
+
+Summary:
+- migrated ARQON CI to GitLab and replaced auto-generated template pipeline with project baseline checks
+- added manual promotion job in `dev` to push into `public` only after green validation jobs
+- fixed `promote_to_public` to handle branch divergence (`fetch + merge + push`) and avoid `fetch first` failures
+
+Changed files:
+- .gitlab-ci.yml (dev)
+- .gitlab-ci.yml (public)
+- CI_HANDOFF.md (dev)
+
+Checks required:
+- compileall
+- pytest
+- self-check
+- GitLab promote_to_public (manual)
+
+Notes/Risks:
+- required CI variable in `arqon-dev`: `ARQON_PUBLIC_PUSH_TOKEN` (masked, protected)
+- promote flow currently merges public head into dev pipeline context before push
+
+Commit message (preferred):
+- ci(flow): stabilize dev->public promotion in GitLab
+
+Commit refs:
+- dev: `cd619c8`
+- public: `f304616`
