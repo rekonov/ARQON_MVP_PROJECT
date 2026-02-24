@@ -77,5 +77,6 @@ promote_to_public:
     - git config --global user.name "arqon-ci"
     - git config --global user.email "ci@arqon.local"
     - git fetch "$PUBLIC_REMOTE" main
-    - git merge --no-edit FETCH_HEAD || { echo "Merge conflict during promote. Resolve dev/public divergence manually."; exit 1; }
+    - git merge --no-edit --allow-unrelated-histories -X ours FETCH_HEAD || { echo "Merge conflict during promote. Resolve dev/public divergence manually."; exit 1; }
     - git push "$PUBLIC_REMOTE" HEAD:main
+
