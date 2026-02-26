@@ -129,12 +129,12 @@ policy_updates:
   url: ''
   interval_sec: 1800
   apply_on_startup: true
-  private_key_file: C:/Users/cvrsxd/Desktop/ARQON_SECRETS/policy-signing-private.pem
+  private_key_file: C:/Users/cvrsxd/Desktop/PROJECTS/ARQON_SECRETS/policy-signing-private.pem
   public_keyring_file: ./config/policy-signing-public.keys.json
   secret_file: ''
   keyring_file: ''
 secrets:
-  store_file: C:/Users/cvrsxd/Desktop/ARQON_SECRETS/secure-secrets.json
+  store_file: C:/Users/cvrsxd/Desktop/PROJECTS/ARQON_SECRETS/secure-secrets.json
 retention:
   enabled: true
   interval_sec: 3600
