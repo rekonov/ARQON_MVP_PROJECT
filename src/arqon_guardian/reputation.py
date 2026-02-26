@@ -1,14 +1,13 @@
 from __future__ import annotations
 
-from dataclasses import dataclass, field
-import threading
 import json
 import logging
-from pathlib import Path
+import threading
 import time
+from dataclasses import dataclass, field
+from pathlib import Path
 from typing import Any
 from urllib import request
-
 
 LOGGER = logging.getLogger(__name__)
 
@@ -23,13 +22,21 @@ class ReputationAssessment:
 
 class LocalReputationProvider:
     def __init__(self, config: dict[str, Any]):
-        self.blocked_domains = {str(item).strip().lower() for item in config.get("blocked_domains", [])}
-        self.trusted_domains = {str(item).strip().lower() for item in config.get("trusted_domains", [])}
+        self.blocked_domains = {
+            str(item).strip().lower() for item in config.get("blocked_domains", [])
+        }
+        self.trusted_domains = {
+            str(item).strip().lower() for item in config.get("trusted_domains", [])
+        }
         self.suspicious_keywords = [
             str(item).strip().lower() for item in config.get("suspicious_keywords", [])
         ]
-        self.blocked_hashes = {str(item).strip().lower() for item in config.get("blocked_hashes", [])}
-        self.allowed_hashes = {str(item).strip().lower() for item in config.get("allowed_hashes", [])}
+        self.blocked_hashes = {
+            str(item).strip().lower() for item in config.get("blocked_hashes", [])
+        }
+        self.allowed_hashes = {
+            str(item).strip().lower() for item in config.get("allowed_hashes", [])
+        }
 
     def evaluate_url(self, url: str, host: str) -> ReputationAssessment:
         risk_delta = 0
@@ -125,7 +132,9 @@ class RemoteReputationAdapter:
             return ReputationAssessment(provider_details={"provider": "remote", "error": error})
 
         if not isinstance(data, dict):
-            return ReputationAssessment(provider_details={"provider": "remote", "error": "invalid_payload"})
+            return ReputationAssessment(
+                provider_details={"provider": "remote", "error": "invalid_payload"}
+            )
 
         reasons = _normalize_reasons(data.get("reasons"), data.get("reason"))
         action = str(data.get("action", "")).strip().lower()

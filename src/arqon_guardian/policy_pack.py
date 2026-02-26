@@ -1,19 +1,18 @@
 from __future__ import annotations
 
-from datetime import datetime, timezone
 import hashlib
 import hmac
 import json
-from pathlib import Path
 import re
 import tempfile
+from datetime import UTC, datetime
+from pathlib import Path
 from typing import Any
 from urllib import request
 
 import yaml
 
 from arqon_guardian.crypto_signing import derive_public_key_pem, sign_ed25519, verify_ed25519
-
 
 SCHEMA_ID = "arqon-policy-pack@1"
 DEFAULT_KEY_ID = "default"
@@ -38,8 +37,8 @@ def sign_policy_pack(
         raise PolicyPackError("Signing key cannot be empty")
 
     filtered_policy = _filter_policy(policy_data)
-    timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
-    pack_version = version or datetime.now(timezone.utc).strftime("%Y%m%d%H%M%S")
+    timestamp = datetime.now(UTC).strftime("%Y-%m-%dT%H:%M:%SZ")
+    pack_version = version or datetime.now(UTC).strftime("%Y%m%d%H%M%S")
     normalized_key_id = key_id.strip() or DEFAULT_KEY_ID
 
     meta: dict[str, Any] = {
@@ -74,7 +73,11 @@ def verify_policy_pack(
     meta = pack.get("meta")
     policy = pack.get("policy")
     signature = pack.get("signature")
-    if not isinstance(meta, dict) or not isinstance(policy, dict) or not isinstance(signature, dict):
+    if (
+        not isinstance(meta, dict)
+        or not isinstance(policy, dict)
+        or not isinstance(signature, dict)
+    ):
         return False, "invalid_pack_structure"
 
     schema = str(meta.get("schema", "")).strip()
@@ -100,7 +103,9 @@ def verify_policy_pack(
             public_key_pem = derive_public_key_pem(selected_secret)
         except Exception:
             return False, "invalid_verification_key"
-        if not verify_ed25519(_canonical_json(unsigned_pack).encode("utf-8"), provided, public_key_pem):
+        if not verify_ed25519(
+            _canonical_json(unsigned_pack).encode("utf-8"), provided, public_key_pem
+        ):
             return False, "signature_mismatch"
     elif algo == "hmac-sha256":
         # Legacy compatibility path.
@@ -160,7 +165,7 @@ def apply_policy_pack(
 
     backup_dir = state_dir / "policy-backups"
     backup_dir.mkdir(parents=True, exist_ok=True)
-    timestamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+    timestamp = datetime.now(UTC).strftime("%Y%m%dT%H%M%SZ")
     backup_file = backup_dir / f"{timestamp}_{config_path.name}"
     backup_file.write_text(config_path.read_text(encoding="utf-8"), encoding="utf-8")
 
@@ -172,7 +177,7 @@ def apply_policy_pack(
 
     history_file = state_dir / "policy-history.jsonl"
     history_entry = {
-        "timestamp_utc": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+        "timestamp_utc": datetime.now(UTC).strftime("%Y-%m-%dT%H:%M:%SZ"),
         "version": version,
         "issuer": issuer,
         "key_id": key_id,

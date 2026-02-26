@@ -1,8 +1,8 @@
 from __future__ import annotations
 
 import logging
-from pathlib import Path
 import threading
+from pathlib import Path
 
 from arqon_guardian.audit import AuditLogger
 from arqon_guardian.events import EventStore
@@ -12,7 +12,6 @@ from arqon_guardian.policy_pack import (
     pull_policy_pack,
     read_secrets,
 )
-
 
 LOGGER = logging.getLogger(__name__)
 

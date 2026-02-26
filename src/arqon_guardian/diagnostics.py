@@ -1,10 +1,10 @@
 from __future__ import annotations
 
-from datetime import datetime, timezone
 import json
+import zipfile
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
-import zipfile
 
 from arqon_guardian.__init__ import __version__
 from arqon_guardian.audit import AuditLogger
@@ -12,7 +12,6 @@ from arqon_guardian.config import AppConfig
 from arqon_guardian.events import EventStore
 from arqon_guardian.health import run_self_check
 from arqon_guardian.quarantine import QuarantineManager
-
 
 SENSITIVE_KEYS = {"auth_key", "admin_key", "api_key", "secret", "token", "password"}
 
@@ -40,7 +39,7 @@ def create_diagnostics_bundle(
 
     metadata = {
         "bundle_schema": "arqon-diagnostics-bundle@1",
-        "generated_at_utc": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+        "generated_at_utc": datetime.now(UTC).strftime("%Y-%m-%dT%H:%M:%SZ"),
         "arqon_version": __version__,
         "config_path": str(config.config_path),
         "limits": {

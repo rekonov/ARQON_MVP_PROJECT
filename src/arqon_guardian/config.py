@@ -1,16 +1,15 @@
 from __future__ import annotations
 
+import os
+import re
 from copy import deepcopy
 from dataclasses import dataclass
-import os
 from pathlib import Path
-import re
 from typing import Any
 
 import yaml
 
 from arqon_guardian.secret_store import SecretStore
-
 
 DEFAULT_CONFIG: dict[str, Any] = {
     "agent": {
@@ -293,7 +292,9 @@ class AppConfig:
 
     @property
     def secret_store_file(self) -> Path:
-        return _expand_path(self.secrets_config.get("store_file", "./state/secure-secrets.json"), self.path_base_dir)
+        return _expand_path(
+            self.secrets_config.get("store_file", "./state/secure-secrets.json"), self.path_base_dir
+        )
 
     @property
     def retention_config(self) -> dict[str, Any]:
@@ -331,9 +332,7 @@ def load_config(config_path: str | Path | None = None) -> AppConfig:
         elif isinstance(raw, dict):
             loaded = raw
         else:
-            raise ConfigValidationError(
-                f"Configuration root must be an object: {target}"
-            )
+            raise ConfigValidationError(f"Configuration root must be an object: {target}")
 
     merged = _deep_merge(deepcopy(DEFAULT_CONFIG), loaded)
     errors = validate_config_data(merged)
@@ -434,16 +433,28 @@ def validate_config_data(data: dict[str, Any]) -> list[str]:
         section="rules",
     )
     _validate_boolean(rules, "script_analysis_enabled", errors, section="rules")
-    _validate_integer_range(rules, "script_analysis_max_bytes", 256, 10 * 1024 * 1024, errors, section="rules")
+    _validate_integer_range(
+        rules, "script_analysis_max_bytes", 256, 10 * 1024 * 1024, errors, section="rules"
+    )
     _validate_string_list(rules, "suspicious_script_patterns", errors, section="rules")
     _validate_string_list(rules, "suspicious_name_patterns", errors, section="rules")
     _validate_string_list(rules, "blocked_url_patterns", errors, section="rules")
     _validate_string_list(rules, "suspicious_url_patterns", errors, section="rules")
-    _validate_regex_list(rules.get("suspicious_cmdline_patterns", []), "rules.suspicious_cmdline_patterns", errors)
-    _validate_regex_list(rules.get("suspicious_script_patterns", []), "rules.suspicious_script_patterns", errors)
-    _validate_regex_list(rules.get("suspicious_name_patterns", []), "rules.suspicious_name_patterns", errors)
-    _validate_regex_list(rules.get("blocked_url_patterns", []), "rules.blocked_url_patterns", errors)
-    _validate_regex_list(rules.get("suspicious_url_patterns", []), "rules.suspicious_url_patterns", errors)
+    _validate_regex_list(
+        rules.get("suspicious_cmdline_patterns", []), "rules.suspicious_cmdline_patterns", errors
+    )
+    _validate_regex_list(
+        rules.get("suspicious_script_patterns", []), "rules.suspicious_script_patterns", errors
+    )
+    _validate_regex_list(
+        rules.get("suspicious_name_patterns", []), "rules.suspicious_name_patterns", errors
+    )
+    _validate_regex_list(
+        rules.get("blocked_url_patterns", []), "rules.blocked_url_patterns", errors
+    )
+    _validate_regex_list(
+        rules.get("suspicious_url_patterns", []), "rules.suspicious_url_patterns", errors
+    )
 
     _validate_boolean(policy_updates, "enabled", errors, section="policy_updates")
     _validate_string(policy_updates, "url", errors, section="policy_updates", allow_empty=True)
@@ -456,17 +467,27 @@ def validate_config_data(data: dict[str, Any]) -> list[str]:
         section="policy_updates",
     )
     _validate_boolean(policy_updates, "apply_on_startup", errors, section="policy_updates")
-    _validate_string(policy_updates, "private_key_file", errors, section="policy_updates", allow_empty=True)
-    _validate_string(policy_updates, "public_keyring_file", errors, section="policy_updates", allow_empty=True)
-    _validate_string(policy_updates, "secret_file", errors, section="policy_updates", allow_empty=True)
-    _validate_string(policy_updates, "keyring_file", errors, section="policy_updates", allow_empty=True)
+    _validate_string(
+        policy_updates, "private_key_file", errors, section="policy_updates", allow_empty=True
+    )
+    _validate_string(
+        policy_updates, "public_keyring_file", errors, section="policy_updates", allow_empty=True
+    )
+    _validate_string(
+        policy_updates, "secret_file", errors, section="policy_updates", allow_empty=True
+    )
+    _validate_string(
+        policy_updates, "keyring_file", errors, section="policy_updates", allow_empty=True
+    )
     if bool(policy_updates.get("enabled")) and not str(policy_updates.get("url", "")).strip():
         errors.append("policy_updates.url is required when policy_updates.enabled=true")
     if bool(policy_updates.get("enabled")):
         private_path = str(policy_updates.get("private_key_file", "")).strip()
         legacy_secret = str(policy_updates.get("secret_file", "")).strip()
         if not private_path and not legacy_secret:
-            errors.append("policy_updates.private_key_file is required when policy_updates.enabled=true")
+            errors.append(
+                "policy_updates.private_key_file is required when policy_updates.enabled=true"
+            )
 
     _validate_boolean(reputation, "enabled", errors, section="reputation")
     provider = str(reputation.get("provider", "")).strip().lower()
@@ -503,10 +524,18 @@ def validate_config_data(data: dict[str, Any]) -> list[str]:
         errors=errors,
         section="retention",
     )
-    _validate_integer_range(retention, "max_event_lines", 100, 1_000_000, errors, section="retention")
-    _validate_integer_range(retention, "max_audit_lines", 100, 1_000_000, errors, section="retention")
-    _validate_integer_range(retention, "max_quarantine_log_lines", 100, 1_000_000, errors, section="retention")
-    _validate_integer_range(retention, "max_quarantine_files", 50, 100_000, errors, section="retention")
+    _validate_integer_range(
+        retention, "max_event_lines", 100, 1_000_000, errors, section="retention"
+    )
+    _validate_integer_range(
+        retention, "max_audit_lines", 100, 1_000_000, errors, section="retention"
+    )
+    _validate_integer_range(
+        retention, "max_quarantine_log_lines", 100, 1_000_000, errors, section="retention"
+    )
+    _validate_integer_range(
+        retention, "max_quarantine_files", 50, 100_000, errors, section="retention"
+    )
     _validate_number_range(
         retention,
         "max_quarantine_age_days",
@@ -517,7 +546,9 @@ def validate_config_data(data: dict[str, Any]) -> list[str]:
     )
     _validate_integer_range(retention, "max_update_backups", 1, 10000, errors, section="retention")
     _validate_integer_range(retention, "max_policy_backups", 10, 10000, errors, section="retention")
-    _validate_integer_range(retention, "max_privacy_backups", 10, 10000, errors, section="retention")
+    _validate_integer_range(
+        retention, "max_privacy_backups", 10, 10000, errors, section="retention"
+    )
 
     return errors
 
@@ -584,7 +615,7 @@ def _validate_number_range(
     section: str,
 ) -> None:
     value = section_data.get(key)
-    if not isinstance(value, (int, float)):
+    if not isinstance(value, int | float):
         errors.append(f"{section}.{key} must be a number")
         return
     value_float = float(value)

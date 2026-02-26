@@ -2,12 +2,11 @@ from __future__ import annotations
 
 import logging
 import threading
-from typing import Callable
+from collections.abc import Callable
 
 import psutil
 
 from arqon_guardian.rules import Decision, RuleEvaluator
-
 
 LOGGER = logging.getLogger(__name__)
 

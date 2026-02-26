@@ -1,9 +1,9 @@
 from __future__ import annotations
 
-from datetime import datetime, timezone
 import json
-from pathlib import Path
 import threading
+from datetime import UTC, datetime
+from pathlib import Path
 from typing import Any
 
 
@@ -24,7 +24,7 @@ class AuditLogger:
         details: dict[str, Any] | None = None,
     ) -> dict[str, Any]:
         payload = {
-            "timestamp_utc": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+            "timestamp_utc": datetime.now(UTC).strftime("%Y-%m-%dT%H:%M:%SZ"),
             "action": action,
             "status": status,
             "actor": actor,
@@ -53,4 +53,3 @@ class AuditLogger:
             if isinstance(payload, dict):
                 output.append(payload)
         return output
-

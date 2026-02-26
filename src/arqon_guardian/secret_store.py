@@ -2,9 +2,9 @@ from __future__ import annotations
 
 import base64
 import ctypes
-from ctypes import wintypes
 import json
 import os
+from ctypes import wintypes
 from pathlib import Path
 from typing import Any
 
@@ -94,7 +94,9 @@ class SecretStore:
         return payload
 
     def _save_payload(self, payload: dict[str, Any]) -> None:
-        self.store_file.write_text(json.dumps(payload, ensure_ascii=True, indent=2), encoding="utf-8")
+        self.store_file.write_text(
+            json.dumps(payload, ensure_ascii=True, indent=2), encoding="utf-8"
+        )
 
 
 class DATA_BLOB(ctypes.Structure):

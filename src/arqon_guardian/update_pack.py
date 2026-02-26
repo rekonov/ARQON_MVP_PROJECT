@@ -1,13 +1,12 @@
 from __future__ import annotations
 
-from datetime import datetime, timezone
 import hashlib
 import json
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
 from arqon_guardian.crypto_signing import derive_public_key_pem, sign_ed25519, verify_ed25519
-
 
 SCHEMA_ID = "arqon-update-pack@1"
 DEFAULT_KEY_ID = "default"
@@ -22,7 +21,15 @@ DEFAULT_ARTIFACTS = [
     "requirements-dev.txt",
     "README.md",
 ]
-IGNORED_DIR_NAMES = {".git", ".venv", "__pycache__", ".pytest_cache", "state", "quarantine", "backups"}
+IGNORED_DIR_NAMES = {
+    ".git",
+    ".venv",
+    "__pycache__",
+    ".pytest_cache",
+    "state",
+    "quarantine",
+    "backups",
+}
 IGNORED_FILE_SUFFIXES = {".pyc", ".pyo"}
 
 
@@ -61,7 +68,7 @@ def build_manifest(source_root: Path, artifacts: list[str] | None = None) -> dic
     return {
         "source_root": str(root),
         "artifacts": selected,
-        "generated_at_utc": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+        "generated_at_utc": datetime.now(UTC).strftime("%Y-%m-%dT%H:%M:%SZ"),
         "file_count": len(file_entries),
         "total_size_bytes": total_size_bytes,
         "missing_artifacts": sorted(missing_artifacts),
@@ -83,8 +90,8 @@ def sign_update_pack(
     if not secret or not secret.strip():
         raise UpdatePackError("Signing secret cannot be empty")
 
-    generated_at = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
-    pack_version = version or datetime.now(timezone.utc).strftime("%Y%m%d%H%M%S")
+    generated_at = datetime.now(UTC).strftime("%Y-%m-%dT%H:%M:%SZ")
+    pack_version = version or datetime.now(UTC).strftime("%Y%m%d%H%M%S")
     normalized_key_id = key_id.strip() or DEFAULT_KEY_ID
 
     meta: dict[str, Any] = {
@@ -119,7 +126,11 @@ def verify_update_pack(
     meta = pack.get("meta")
     manifest = pack.get("manifest")
     signature = pack.get("signature")
-    if not isinstance(meta, dict) or not isinstance(manifest, dict) or not isinstance(signature, dict):
+    if (
+        not isinstance(meta, dict)
+        or not isinstance(manifest, dict)
+        or not isinstance(signature, dict)
+    ):
         return False, "invalid_pack_structure", {}
 
     schema = str(meta.get("schema", "")).strip()
@@ -145,7 +156,9 @@ def verify_update_pack(
             public_key_pem = derive_public_key_pem(selected_secret)
         except Exception:
             return False, "invalid_verification_key", {}
-        if not verify_ed25519(_canonical_json(unsigned_pack).encode("utf-8"), provided, public_key_pem):
+        if not verify_ed25519(
+            _canonical_json(unsigned_pack).encode("utf-8"), provided, public_key_pem
+        ):
             return False, "signature_mismatch", {}
     else:
         return False, "unsupported_signature_algorithm", {}
@@ -201,11 +214,15 @@ def verify_update_pack(
 
     file_count = int(manifest.get("file_count", len(expected_entries)))
     total_size_bytes = int(manifest.get("total_size_bytes", 0))
-    return True, "ok", {
-        "file_count": file_count,
-        "total_size_bytes": total_size_bytes,
-        "artifacts": artifacts,
-    }
+    return (
+        True,
+        "ok",
+        {
+            "file_count": file_count,
+            "total_size_bytes": total_size_bytes,
+            "artifacts": artifacts,
+        },
+    )
 
 
 def save_update_pack(pack: dict[str, Any], path: Path) -> None:
@@ -294,7 +311,9 @@ def _canonical_json(value: Any) -> str:
     return json.dumps(value, ensure_ascii=True, separators=(",", ":"), sort_keys=True)
 
 
-def _collect_entries_for_artifacts(source_root: Path, artifacts: list[str]) -> dict[str, dict[str, Any]]:
+def _collect_entries_for_artifacts(
+    source_root: Path, artifacts: list[str]
+) -> dict[str, dict[str, Any]]:
     output: dict[str, dict[str, Any]] = {}
     for artifact in artifacts:
         target = (source_root / artifact).resolve()

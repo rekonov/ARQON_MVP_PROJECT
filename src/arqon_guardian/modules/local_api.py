@@ -2,22 +2,22 @@ from __future__ import annotations
 
 import csv
 import hmac
-from http import HTTPStatus
-from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 import io
 import json
 import logging
 import mimetypes
-from pathlib import Path
 import threading
 import time
-from typing import Any, Callable
+from collections.abc import Callable
+from http import HTTPStatus
+from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+from pathlib import Path
+from typing import Any
 from urllib.parse import parse_qs, urlsplit
 
 from arqon_guardian.events import EventStore
 from arqon_guardian.quarantine import QuarantineManager
 from arqon_guardian.rules import Decision, RuleEvaluator
-
 
 LOGGER = logging.getLogger(__name__)
 
@@ -120,14 +120,18 @@ class LocalApiServer:
 
                 if path in {"/", "/dashboard", "/dashboard/"}:
                     if not dashboard_dir:
-                        self._write_json(HTTPStatus.NOT_FOUND, {"error": "dashboard_not_configured"})
+                        self._write_json(
+                            HTTPStatus.NOT_FOUND, {"error": "dashboard_not_configured"}
+                        )
                         return
                     self._write_static_file(dashboard_dir / "index.html")
                     return
 
                 if path.startswith("/dashboard/"):
                     if not dashboard_dir:
-                        self._write_json(HTTPStatus.NOT_FOUND, {"error": "dashboard_not_configured"})
+                        self._write_json(
+                            HTTPStatus.NOT_FOUND, {"error": "dashboard_not_configured"}
+                        )
                         return
                     relative = path[len("/dashboard/") :].strip("/")
                     if not relative:
@@ -158,7 +162,9 @@ class LocalApiServer:
                     if not self._consume_rate_limit(rate_limiter, scope="admin"):
                         return
                     limit = _read_limit(params.get("limit", ["1000"]))
-                    min_level = _read_single(params.get("min_level", ["warning"]), default="warning")
+                    min_level = _read_single(
+                        params.get("min_level", ["warning"]), default="warning"
+                    )
                     incidents = (
                         event_store.incident_records(limit=limit, min_level=min_level)
                         if event_store
@@ -178,12 +184,16 @@ class LocalApiServer:
                         return
                     if not self._consume_rate_limit(rate_limiter, scope="admin"):
                         return
-                    export_format = _read_single(params.get("format", ["json"]), default="json").lower()
+                    export_format = _read_single(
+                        params.get("format", ["json"]), default="json"
+                    ).lower()
                     if export_format not in {"json", "csv"}:
                         self._write_json(HTTPStatus.BAD_REQUEST, {"error": "invalid_export_format"})
                         return
                     limit = _read_limit(params.get("limit", ["1000"]))
-                    min_level = _read_single(params.get("min_level", ["warning"]), default="warning")
+                    min_level = _read_single(
+                        params.get("min_level", ["warning"]), default="warning"
+                    )
                     incidents = (
                         event_store.incident_records(limit=limit, min_level=min_level)
                         if event_store
@@ -230,7 +240,10 @@ class LocalApiServer:
                     payload = {
                         "events": event_summary,
                         "quarantine_count": quarantine_count,
-                        "api": {"host": self.server.server_address[0], "port": self.server.server_address[1]},
+                        "api": {
+                            "host": self.server.server_address[0],
+                            "port": self.server.server_address[1],
+                        },
                     }
                     self._write_json(HTTPStatus.OK, payload)
                     return
@@ -252,7 +265,9 @@ class LocalApiServer:
                         return
                     if not self._consume_rate_limit(rate_limiter, scope="admin"):
                         return
-                    skip_bind_check = _read_bool(params.get("skip_bind_check", ["true"]), default=True)
+                    skip_bind_check = _read_bool(
+                        params.get("skip_bind_check", ["true"]), default=True
+                    )
                     if self_check_provider:
                         payload = self_check_provider(skip_bind_check)
                     else:
@@ -329,7 +344,7 @@ class LocalApiServer:
                 provided_admin = self.headers.get("X-ARQON-Admin-Key", "")
                 return hmac.compare_digest(provided_admin, expected_admin)
 
-            def _consume_rate_limit(self, limiter: "SlidingWindowRateLimiter", scope: str) -> bool:
+            def _consume_rate_limit(self, limiter: SlidingWindowRateLimiter, scope: str) -> bool:
                 client_ip = self.client_address[0] if self.client_address else "unknown"
                 key = f"{scope}:{client_ip}:{self.path.split('?', 1)[0]}"
                 if limiter.allow(key=key, scope=scope):

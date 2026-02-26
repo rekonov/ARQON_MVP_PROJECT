@@ -30,4 +30,3 @@ def test_runtime_lock_clears_stale_pid_file(tmp_path):
     lock = RuntimeLock(lock_path)
     lock.acquire()
     lock.release()
-
