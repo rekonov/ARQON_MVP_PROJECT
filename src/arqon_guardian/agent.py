@@ -1,25 +1,24 @@
 from __future__ import annotations
 
 import logging
-from pathlib import Path
 import time
+from pathlib import Path
 
 from arqon_guardian.audit import AuditLogger
 from arqon_guardian.config import AppConfig
 from arqon_guardian.events import EventStore
+from arqon_guardian.health import run_self_check
 from arqon_guardian.modules.download_monitor import DownloadMonitor
 from arqon_guardian.modules.firewall_manager import FirewallManager
 from arqon_guardian.modules.local_api import LocalApiServer
 from arqon_guardian.modules.policy_updater import PolicyUpdater
 from arqon_guardian.modules.process_monitor import ProcessMonitor
-from arqon_guardian.health import run_self_check
 from arqon_guardian.quarantine import QuarantineManager
 from arqon_guardian.reputation import ReputationService
 from arqon_guardian.retention import RetentionManager
 from arqon_guardian.rules import Decision, RuleEvaluator
 from arqon_guardian.signature import SignatureInspector
 from arqon_guardian.supervisor import RuntimeSupervisor
-
 
 LOGGER = logging.getLogger(__name__)
 

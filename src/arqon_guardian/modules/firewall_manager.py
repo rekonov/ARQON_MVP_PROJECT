@@ -3,9 +3,8 @@ from __future__ import annotations
 import json
 import logging
 import os
-from pathlib import Path
 import subprocess
-
+from pathlib import Path
 
 LOGGER = logging.getLogger(__name__)
 
@@ -39,7 +38,9 @@ class FirewallManager:
         final_hosts = sorted((current - set(to_remove)) | set(to_add))
         self._save_managed_hosts(final_hosts)
 
-        LOGGER.info("Firewall sync done: added=%s removed=%s total=%s", added, removed, len(final_hosts))
+        LOGGER.info(
+            "Firewall sync done: added=%s removed=%s total=%s", added, removed, len(final_hosts)
+        )
         return {"added": added, "removed": removed, "total": len(final_hosts)}
 
     def _rule_name(self, host: str) -> str:
@@ -89,7 +90,9 @@ class FirewallManager:
 
     def _save_managed_hosts(self, hosts: list[str]) -> None:
         payload = {"hosts": hosts}
-        self.state_file.write_text(json.dumps(payload, ensure_ascii=True, indent=2), encoding="utf-8")
+        self.state_file.write_text(
+            json.dumps(payload, ensure_ascii=True, indent=2), encoding="utf-8"
+        )
 
 
 def _run_netsh(command: list[str]) -> bool:
@@ -113,4 +116,3 @@ def _run_netsh(command: list[str]) -> bool:
 def _ensure_windows() -> None:
     if os.name != "nt":
         raise RuntimeError("Windows firewall sync is supported only on Windows")
-

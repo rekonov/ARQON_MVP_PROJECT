@@ -32,4 +32,3 @@ def configure_logging(log_file: Path, verbose: bool = False) -> None:
     console_handler.setFormatter(formatter)
     console_handler.setLevel(level)
     root_logger.addHandler(console_handler)
-

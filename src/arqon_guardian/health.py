@@ -1,11 +1,11 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
-from datetime import datetime, timezone
 import os
-from pathlib import Path
 import socket
 import tempfile
+from dataclasses import dataclass
+from datetime import UTC, datetime
+from pathlib import Path
 from typing import Any
 
 from arqon_guardian.config import AppConfig, detect_project_root
@@ -72,7 +72,7 @@ def run_self_check(
             highest = item.status
 
     return {
-        "timestamp_utc": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+        "timestamp_utc": datetime.now(UTC).strftime("%Y-%m-%dT%H:%M:%SZ"),
         "status": highest,
         "counts": counts,
         "config_path": str(config.config_path),
@@ -213,7 +213,9 @@ def _check_policy_update_material(config: AppConfig) -> HealthCheckResult:
             details={},
         )
 
-    secret_raw = str(updates_cfg.get("private_key_file") or updates_cfg.get("secret_file", "")).strip()
+    secret_raw = str(
+        updates_cfg.get("private_key_file") or updates_cfg.get("secret_file", "")
+    ).strip()
     if not secret_raw:
         return HealthCheckResult(
             name="policy_update_material",
@@ -233,7 +235,9 @@ def _check_policy_update_material(config: AppConfig) -> HealthCheckResult:
             details={"private_key_file": str(secret_path)},
         )
 
-    keyring_raw = str(updates_cfg.get("public_keyring_file") or updates_cfg.get("keyring_file", "")).strip()
+    keyring_raw = str(
+        updates_cfg.get("public_keyring_file") or updates_cfg.get("keyring_file", "")
+    ).strip()
     keyring_path: Path | None = None
     if keyring_raw:
         keyring_path = Path(os.path.expandvars(os.path.expanduser(keyring_raw)))

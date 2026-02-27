@@ -1,18 +1,18 @@
 from __future__ import annotations
 
-from dataclasses import dataclass, field
 import hashlib
 import ipaddress
 import logging
-from pathlib import Path
 import re
-from typing import Any, Iterable
-from urllib.parse import parse_qs, urlparse
 import zipfile
+from collections.abc import Iterable
+from dataclasses import dataclass, field
+from pathlib import Path
+from typing import Any
+from urllib.parse import parse_qs, urlparse
 
 from arqon_guardian.reputation import ReputationService
 from arqon_guardian.signature import SignatureInspector
-
 
 LOGGER = logging.getLogger(__name__)
 
@@ -76,7 +76,8 @@ class RuleEvaluator:
             str(item).strip().lower() for item in rules_config.get("blocked_extensions", [])
         }
         self.high_risk_download_extensions = {
-            str(item).strip().lower() for item in rules_config.get("high_risk_download_extensions", [])
+            str(item).strip().lower()
+            for item in rules_config.get("high_risk_download_extensions", [])
         }
         self.blocked_hashes = {
             str(item).strip().lower() for item in rules_config.get("blocked_hashes", [])
@@ -88,15 +89,21 @@ class RuleEvaluator:
             rules_config.get("suspicious_name_patterns", [])
         )
         self.blocked_url_patterns = _compile_patterns(rules_config.get("blocked_url_patterns", []))
-        self.suspicious_url_patterns = _compile_patterns(rules_config.get("suspicious_url_patterns", []))
+        self.suspicious_url_patterns = _compile_patterns(
+            rules_config.get("suspicious_url_patterns", [])
+        )
 
         self.archive_scan_enabled = bool(rules_config.get("archive_scan_enabled", True))
-        self.archive_scan_max_entries = max(1, int(rules_config.get("archive_scan_max_entries", 256)))
+        self.archive_scan_max_entries = max(
+            1, int(rules_config.get("archive_scan_max_entries", 256))
+        )
         archive_max_mb = float(rules_config.get("archive_scan_max_total_uncompressed_mb", 128))
         self.archive_scan_max_total_uncompressed_bytes = int(max(1.0, archive_max_mb) * 1024 * 1024)
 
         self.script_analysis_enabled = bool(rules_config.get("script_analysis_enabled", True))
-        self.script_analysis_max_bytes = max(512, int(rules_config.get("script_analysis_max_bytes", 262_144)))
+        self.script_analysis_max_bytes = max(
+            512, int(rules_config.get("script_analysis_max_bytes", 262_144))
+        )
         self.suspicious_script_patterns = _compile_patterns(
             rules_config.get("suspicious_script_patterns", [])
         )
@@ -317,7 +324,15 @@ class RuleEvaluator:
             reasons.append(f"high_risk_download_target:{download_ext}")
 
         query_map = parse_qs(parsed.query, keep_blank_values=True)
-        sensitive_params = {"seed", "privatekey", "passphrase", "wallet", "recovery", "otp", "token"}
+        sensitive_params = {
+            "seed",
+            "privatekey",
+            "passphrase",
+            "wallet",
+            "recovery",
+            "otp",
+            "token",
+        }
         sensitive_hits = sorted(set(query_map.keys()) & sensitive_params)
         if sensitive_hits:
             risk += 35

@@ -1,15 +1,14 @@
 from __future__ import annotations
 
-from datetime import datetime, timedelta, timezone
 import logging
-from pathlib import Path
 import shutil
 import threading
+from datetime import UTC, datetime, timedelta
+from pathlib import Path
 from typing import Any
 
 from arqon_guardian.audit import AuditLogger
 from arqon_guardian.events import EventStore
-
 
 LOGGER = logging.getLogger(__name__)
 
@@ -100,7 +99,9 @@ def run_retention(
 
     changes: dict[str, int] = {}
 
-    event_lines_removed = _trim_jsonl(state_dir / "events.jsonl", max_lines=int(config.get("max_event_lines", 20000)))
+    event_lines_removed = _trim_jsonl(
+        state_dir / "events.jsonl", max_lines=int(config.get("max_event_lines", 20000))
+    )
     audit_lines_removed = _trim_jsonl(
         state_dir / "audit-log.jsonl",
         max_lines=int(config.get("max_audit_lines", 20000)),
@@ -161,19 +162,25 @@ def _trim_jsonl(path: Path, *, max_lines: int) -> int:
 
 
 def _prune_quarantine_files(*, quarantine_dir: Path, max_files: int, max_age_days: float) -> int:
-    files = sorted([item for item in quarantine_dir.glob("*") if item.is_file()], key=lambda p: p.stat().st_mtime)
+    files = sorted(
+        [item for item in quarantine_dir.glob("*") if item.is_file()],
+        key=lambda p: p.stat().st_mtime,
+    )
     if not files:
         return 0
     removed = 0
-    cutoff = datetime.now(timezone.utc) - timedelta(days=max(1.0, float(max_age_days)))
+    cutoff = datetime.now(UTC) - timedelta(days=max(1.0, float(max_age_days)))
 
     for file_path in files:
-        modified_at = datetime.fromtimestamp(file_path.stat().st_mtime, tz=timezone.utc)
+        modified_at = datetime.fromtimestamp(file_path.stat().st_mtime, tz=UTC)
         if modified_at < cutoff:
             file_path.unlink(missing_ok=True)
             removed += 1
 
-    files = sorted([item for item in quarantine_dir.glob("*") if item.is_file()], key=lambda p: p.stat().st_mtime)
+    files = sorted(
+        [item for item in quarantine_dir.glob("*") if item.is_file()],
+        key=lambda p: p.stat().st_mtime,
+    )
     max_allowed = max(1, int(max_files))
     overflow = max(0, len(files) - max_allowed)
     for file_path in files[:overflow]:
@@ -185,7 +192,9 @@ def _prune_quarantine_files(*, quarantine_dir: Path, max_files: int, max_age_day
 def _prune_backup_dirs(*, backups_dir: Path, max_dirs: int) -> int:
     if not backups_dir.exists() or not backups_dir.is_dir():
         return 0
-    dirs = sorted([item for item in backups_dir.iterdir() if item.is_dir()], key=lambda p: p.stat().st_mtime)
+    dirs = sorted(
+        [item for item in backups_dir.iterdir() if item.is_dir()], key=lambda p: p.stat().st_mtime
+    )
     max_allowed = max(1, int(max_dirs))
     overflow = max(0, len(dirs) - max_allowed)
     removed = 0
@@ -198,7 +207,9 @@ def _prune_backup_dirs(*, backups_dir: Path, max_dirs: int) -> int:
 def _prune_backup_files(*, backup_dir: Path, max_files: int) -> int:
     if not backup_dir.exists() or not backup_dir.is_dir():
         return 0
-    files = sorted([item for item in backup_dir.iterdir() if item.is_file()], key=lambda p: p.stat().st_mtime)
+    files = sorted(
+        [item for item in backup_dir.iterdir() if item.is_file()], key=lambda p: p.stat().st_mtime
+    )
     max_allowed = max(1, int(max_files))
     overflow = max(0, len(files) - max_allowed)
     removed = 0

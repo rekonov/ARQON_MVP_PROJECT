@@ -1,12 +1,11 @@
 from __future__ import annotations
 
 import csv
-from datetime import datetime, timezone
 import json
-from pathlib import Path
 import threading
+from datetime import UTC, datetime
+from pathlib import Path
 from typing import Any
-
 
 LEVEL_PRIORITY: dict[str, int] = {
     "debug": 10,
@@ -32,7 +31,7 @@ class EventStore:
         data: dict[str, Any] | None = None,
     ) -> dict[str, Any]:
         payload = {
-            "timestamp_utc": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+            "timestamp_utc": datetime.now(UTC).strftime("%Y-%m-%dT%H:%M:%SZ"),
             "type": event_type,
             "level": level,
             "message": message,
@@ -95,7 +94,9 @@ class EventStore:
                 filtered.append(payload)
         return filtered[-target:]
 
-    def incident_records(self, limit: int = 1000, min_level: str = "warning") -> list[dict[str, Any]]:
+    def incident_records(
+        self, limit: int = 1000, min_level: str = "warning"
+    ) -> list[dict[str, Any]]:
         return self.query(limit=limit, min_level=min_level)
 
     def export_incidents(
@@ -116,7 +117,7 @@ class EventStore:
 
         if fmt == "json":
             payload = {
-                "exported_at_utc": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+                "exported_at_utc": datetime.now(UTC).strftime("%Y-%m-%dT%H:%M:%SZ"),
                 "count": len(records),
                 "min_level": _normalize_level(min_level, default="warning"),
                 "incidents": records,

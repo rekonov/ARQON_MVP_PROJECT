@@ -58,7 +58,9 @@ def build_parser() -> argparse.ArgumentParser:
     subparsers.add_parser("run", help="Run realtime security agent")
     subparsers.add_parser("api-run", help="Run only local API server")
 
-    self_check = subparsers.add_parser("self-check", help="Run local health checks for install/update")
+    self_check = subparsers.add_parser(
+        "self-check", help="Run local health checks for install/update"
+    )
     self_check.add_argument(
         "--strict",
         action="store_true",
@@ -126,7 +128,9 @@ def build_parser() -> argparse.ArgumentParser:
     policy_apply.add_argument("--secret", default=None, help="Verification secret")
     policy_apply.add_argument("--secret-file", default=None, help="Path to secret file")
     policy_apply.add_argument("--keyring-file", default=None, help="Path to keyring file")
-    policy_apply.add_argument("--allow-replay", action="store_true", help="Allow same/older version")
+    policy_apply.add_argument(
+        "--allow-replay", action="store_true", help="Allow same/older version"
+    )
 
     policy_pull = policy_sub.add_parser("pull", help="Download and apply signed policy pack")
     policy_pull.add_argument("--url", required=True, help="Pack URL")
@@ -138,7 +142,9 @@ def build_parser() -> argparse.ArgumentParser:
 
     incidents = subparsers.add_parser("incidents", help="Incident records operations")
     incidents_sub = incidents.add_subparsers(dest="incidents_command", required=True)
-    incidents_export = incidents_sub.add_parser("export", help="Export incidents from local event store")
+    incidents_export = incidents_sub.add_parser(
+        "export", help="Export incidents from local event store"
+    )
     incidents_export.add_argument(
         "--format",
         default="json",
@@ -162,8 +168,12 @@ def build_parser() -> argparse.ArgumentParser:
         default=None,
         help="Output ZIP path (default: state/diagnostics-<timestamp>.zip)",
     )
-    diagnostics_bundle.add_argument("--events-limit", type=int, default=1000, help="Events tail limit")
-    diagnostics_bundle.add_argument("--audit-limit", type=int, default=1000, help="Audit tail limit")
+    diagnostics_bundle.add_argument(
+        "--events-limit", type=int, default=1000, help="Events tail limit"
+    )
+    diagnostics_bundle.add_argument(
+        "--audit-limit", type=int, default=1000, help="Audit tail limit"
+    )
     diagnostics_bundle.add_argument(
         "--quarantine-limit",
         type=int,
@@ -181,7 +191,9 @@ def build_parser() -> argparse.ArgumentParser:
     rotate_keys = config_sub.add_parser("rotate-keys", help="Generate and persist new API keys")
     rotate_keys.add_argument("--user-key", default=None, help="Explicit user key value")
     rotate_keys.add_argument("--admin-key", default=None, help="Explicit admin key value")
-    rotate_keys.add_argument("--length", type=int, default=32, help="Random key length when auto-generating")
+    rotate_keys.add_argument(
+        "--length", type=int, default=32, help="Random key length when auto-generating"
+    )
     rotate_keys.add_argument(
         "--store-file",
         default=None,
@@ -203,7 +215,9 @@ def build_parser() -> argparse.ArgumentParser:
         "ensure-keys",
         help="Ensure API keys exist in secret store/config without rotating existing values",
     )
-    ensure_keys.add_argument("--length", type=int, default=32, help="Generated key length for missing keys")
+    ensure_keys.add_argument(
+        "--length", type=int, default=32, help="Generated key length for missing keys"
+    )
     ensure_keys.add_argument("--store-file", default=None, help="Override secret store file path")
     ensure_keys.add_argument(
         "--config-mode",
@@ -249,8 +263,12 @@ def build_parser() -> argparse.ArgumentParser:
     update_pack = subparsers.add_parser("update-pack", help="Signed update package operations")
     update_pack_sub = update_pack.add_subparsers(dest="update_pack_command", required=True)
 
-    update_pack_build = update_pack_sub.add_parser("build", help="Build and sign update package manifest")
-    update_pack_build.add_argument("--source-root", required=True, help="Project/source root to package")
+    update_pack_build = update_pack_sub.add_parser(
+        "build", help="Build and sign update package manifest"
+    )
+    update_pack_build.add_argument(
+        "--source-root", required=True, help="Project/source root to package"
+    )
     update_pack_build.add_argument("--output", required=True, help="Output update pack file")
     update_pack_build.add_argument("--issuer", default="arqon-release", help="Update pack issuer")
     update_pack_build.add_argument("--version", default=None, help="Pack version")
@@ -268,7 +286,9 @@ def build_parser() -> argparse.ArgumentParser:
 
     update_pack_verify = update_pack_sub.add_parser("verify", help="Verify signed update package")
     update_pack_verify.add_argument("--pack", required=True, help="Update pack file")
-    update_pack_verify.add_argument("--source-root", required=True, help="Root folder to verify against")
+    update_pack_verify.add_argument(
+        "--source-root", required=True, help="Root folder to verify against"
+    )
     update_pack_verify.add_argument("--secret", default=None, help="Verification secret")
     update_pack_verify.add_argument("--secret-file", default=None, help="Path to secret file")
     update_pack_verify.add_argument("--keyring-file", default=None, help="Path to keyring file")
@@ -374,7 +394,9 @@ def _build_evaluator(config) -> RuleEvaluator:
     )
 
 
-def _handle_scan_file(config, evaluator: RuleEvaluator, file_path: str, quarantine_on_block: bool) -> int:
+def _handle_scan_file(
+    config, evaluator: RuleEvaluator, file_path: str, quarantine_on_block: bool
+) -> int:
     target = Path(file_path).expanduser().resolve()
     decision = evaluator.evaluate_file(target)
 
@@ -875,7 +897,9 @@ def _handle_config_command(config, args, audit_logger: AuditLogger) -> int:
                     admin_ref="api_admin_key",
                 )
             else:
-                _write_rotated_keys_plaintext(config.config_path, user_key=user_key, admin_key=admin_key)
+                _write_rotated_keys_plaintext(
+                    config.config_path, user_key=user_key, admin_key=admin_key
+                )
             result["written"] = True
             audit_logger.log(
                 action="config_rotate_keys",
@@ -917,7 +941,9 @@ def _handle_config_command(config, args, audit_logger: AuditLogger) -> int:
                 admin_ref="api_admin_key",
             )
         else:
-            _write_rotated_keys_plaintext(config.config_path, user_key=user_key, admin_key=admin_key)
+            _write_rotated_keys_plaintext(
+                config.config_path, user_key=user_key, admin_key=admin_key
+            )
 
         payload = {
             "config_path": str(config.config_path),
@@ -949,7 +975,14 @@ def _handle_config_command(config, args, audit_logger: AuditLogger) -> int:
             value = store.get(str(args.name))
             masked = bool(args.masked)
             shown = None if value is None else ("***masked***" if masked else value)
-            _print_json({"store_file": str(store_file), "name": str(args.name), "value": shown, "found": value is not None})
+            _print_json(
+                {
+                    "store_file": str(store_file),
+                    "name": str(args.name),
+                    "value": shown,
+                    "found": value is not None,
+                }
+            )
             return 0
         if args.secret_store_command == "list":
             _print_json({"store_file": str(store_file), "keys": store.list_keys()})
@@ -982,7 +1015,9 @@ def _handle_crypto_command(args) -> int:
         keyring_path.parent.mkdir(parents=True, exist_ok=True)
         key_id = str(args.key_id or "default").strip() or "default"
         keyring_payload = {"keys": {key_id: {"public_key_pem": pair.public_key_pem}}}
-        keyring_path.write_text(json.dumps(keyring_payload, ensure_ascii=True, indent=2), encoding="utf-8")
+        keyring_path.write_text(
+            json.dumps(keyring_payload, ensure_ascii=True, indent=2), encoding="utf-8"
+        )
         payload["keyring_out"] = str(keyring_path)
         payload["key_id"] = key_id
 

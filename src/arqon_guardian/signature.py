@@ -1,12 +1,11 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
 import json
 import logging
 import os
-from pathlib import Path
 import subprocess
-
+from dataclasses import dataclass
+from pathlib import Path
 
 LOGGER = logging.getLogger(__name__)
 
@@ -60,7 +59,8 @@ class SignatureInspector:
             "$sig = Get-AuthenticodeSignature -FilePath "
             f"'{escaped_path}'; "
             "$signer=''; if ($sig.SignerCertificate) { $signer=$sig.SignerCertificate.Subject }; "
-            "$obj=[ordered]@{Status=$sig.Status.ToString(); StatusMessage=$sig.StatusMessage; Signer=$signer}; "
+            "$obj=[ordered]@{Status=$sig.Status.ToString();"
+            " StatusMessage=$sig.StatusMessage; Signer=$signer}; "
             "$obj | ConvertTo-Json -Compress"
         )
 
@@ -94,7 +94,9 @@ class SignatureInspector:
         is_trusted = status in trusted_statuses
         is_signed = status not in unsigned_statuses and status not in {"Skipped", "Unknown"}
 
-        return SignatureInfo(status=status, signer=signer, is_signed=is_signed, is_trusted=is_trusted)
+        return SignatureInfo(
+            status=status, signer=signer, is_signed=is_signed, is_trusted=is_trusted
+        )
 
 
 def _resolve_powershell() -> str:

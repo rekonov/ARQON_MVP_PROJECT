@@ -25,7 +25,9 @@ class ProxyManager:
             raise ValueError("Proxy port must be within 1..65535")
 
         server = f"{host}:{port}"
-        with winreg.CreateKeyEx(winreg.HKEY_CURRENT_USER, self.INTERNET_SETTINGS_KEY, 0, winreg.KEY_SET_VALUE) as key:
+        with winreg.CreateKeyEx(
+            winreg.HKEY_CURRENT_USER, self.INTERNET_SETTINGS_KEY, 0, winreg.KEY_SET_VALUE
+        ) as key:
             winreg.SetValueEx(key, "ProxyEnable", 0, winreg.REG_DWORD, 1)
             winreg.SetValueEx(key, "ProxyServer", 0, winreg.REG_SZ, server)
 
@@ -35,7 +37,9 @@ class ProxyManager:
 
     def disable_proxy(self) -> dict[str, Any]:
         _ensure_windows()
-        with winreg.CreateKeyEx(winreg.HKEY_CURRENT_USER, self.INTERNET_SETTINGS_KEY, 0, winreg.KEY_SET_VALUE) as key:
+        with winreg.CreateKeyEx(
+            winreg.HKEY_CURRENT_USER, self.INTERNET_SETTINGS_KEY, 0, winreg.KEY_SET_VALUE
+        ) as key:
             winreg.SetValueEx(key, "ProxyEnable", 0, winreg.REG_DWORD, 0)
             try:
                 winreg.DeleteValue(key, "ProxyServer")
@@ -50,7 +54,9 @@ class ProxyManager:
         _ensure_windows()
         enabled = 0
         server = ""
-        with winreg.CreateKeyEx(winreg.HKEY_CURRENT_USER, self.INTERNET_SETTINGS_KEY, 0, winreg.KEY_READ) as key:
+        with winreg.CreateKeyEx(
+            winreg.HKEY_CURRENT_USER, self.INTERNET_SETTINGS_KEY, 0, winreg.KEY_READ
+        ) as key:
             try:
                 enabled, _ = winreg.QueryValueEx(key, "ProxyEnable")
             except FileNotFoundError:
@@ -77,4 +83,3 @@ def _run_command(command: list[str]) -> None:
 def _ensure_windows() -> None:
     if os.name != "nt" or winreg is None:
         raise RuntimeError("Proxy controls are supported only on Windows")
-

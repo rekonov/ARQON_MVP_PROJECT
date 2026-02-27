@@ -1,13 +1,12 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
-from datetime import datetime, timezone
 import json
 import logging
-from pathlib import Path
 import shutil
+from dataclasses import dataclass
+from datetime import UTC, datetime
+from pathlib import Path
 from uuid import uuid4
-
 
 LOGGER = logging.getLogger(__name__)
 
@@ -40,7 +39,7 @@ class QuarantineManager:
             LOGGER.warning("Quarantine skipped (file missing): %s", file_path)
             return None
 
-        timestamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+        timestamp = datetime.now(UTC).strftime("%Y%m%dT%H%M%SZ")
         destination_name = f"{timestamp}_{uuid4().hex[:8]}_{file_path.name}"
         destination = self.quarantine_dir / destination_name
 

@@ -1,13 +1,13 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
 import logging
 import threading
-from typing import Any, Callable
+from collections.abc import Callable
+from dataclasses import dataclass
+from typing import Any
 
 from arqon_guardian.audit import AuditLogger
 from arqon_guardian.events import EventStore
-
 
 LOGGER = logging.getLogger(__name__)
 

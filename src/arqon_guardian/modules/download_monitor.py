@@ -1,17 +1,16 @@
 from __future__ import annotations
 
 import logging
-from pathlib import Path
 import threading
 import time
-from typing import Callable
+from collections.abc import Callable
+from pathlib import Path
 
 from watchdog.events import FileSystemEvent, FileSystemEventHandler
 from watchdog.observers import Observer
 
 from arqon_guardian.quarantine import QuarantineManager
 from arqon_guardian.rules import Decision, RuleEvaluator
-
 
 LOGGER = logging.getLogger(__name__)
 
@@ -65,7 +64,9 @@ class DownloadMonitor:
             return
 
         reason = ",".join(decision.reasons)
-        quarantined_path = self.quarantine.quarantine_file(path, reason=reason, sha256=decision.sha256)
+        quarantined_path = self.quarantine.quarantine_file(
+            path, reason=reason, sha256=decision.sha256
+        )
         if self.on_blocked_file:
             self.on_blocked_file(path, quarantined_path, decision)
 
@@ -103,7 +104,9 @@ class _DownloadEventHandler(FileSystemEventHandler):
         self._monitor.handle_path(Path(event.src_path))
 
 
-def _wait_until_file_stable(path: Path, timeout_sec: float = 6.0, interval_sec: float = 0.4) -> bool:
+def _wait_until_file_stable(
+    path: Path, timeout_sec: float = 6.0, interval_sec: float = 0.4
+) -> bool:
     deadline = time.time() + timeout_sec
     previous_size = -1
 

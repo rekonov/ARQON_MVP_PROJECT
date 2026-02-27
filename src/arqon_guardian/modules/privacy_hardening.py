@@ -1,10 +1,10 @@
 from __future__ import annotations
 
-from dataclasses import asdict, dataclass
-from datetime import datetime, timezone
 import json
 import logging
 import os
+from dataclasses import asdict, dataclass
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
@@ -103,7 +103,7 @@ class HardeningManager:
         if settings is None:
             raise ValueError(f"Unknown profile: {profile_name}")
 
-        timestamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+        timestamp = datetime.now(UTC).strftime("%Y%m%dT%H%M%SZ")
         backup_entries: list[BackupEntry] = []
         applied = 0
         failed: list[dict[str, str]] = []
@@ -299,4 +299,3 @@ def _value_type_to_name(value_type: int) -> str:
         winreg.REG_QWORD: "REG_QWORD",
     }
     return mapping.get(value_type, "REG_SZ")
-
