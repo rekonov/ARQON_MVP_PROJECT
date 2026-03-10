@@ -42,7 +42,7 @@ Local-first Windows security agent focused on user safety, privacy, and controll
 ## Quick start
 
 ```powershell
-cd C:\Users\cvrsxd\Desktop\PROJECTS\ARQON_PROJECT\dev
+cd C:\Users\Bogdan\Documents\PROJECTS\PROJECTS\ARQON_PROJECT\dev
 python -m venv .venv
 .venv\Scripts\Activate.ps1
 pip install -r requirements.txt
@@ -67,7 +67,7 @@ It performs first-run setup, starts protection, and shows a simple terminal stat
 Local API/dashboard access is disabled in this mode.
 
 ```powershell
-cd C:\Users\cvrsxd\Desktop\PROJECTS\ARQON_PROJECT\dev
+cd C:\Users\Bogdan\Documents\PROJECTS\PROJECTS\ARQON_PROJECT\dev
 powershell -ExecutionPolicy Bypass -File .\scripts\run_user_console.ps1
 ```
 
@@ -114,7 +114,7 @@ Quick launchers:
 Create distributable user/admin archives:
 
 ```powershell
-cd C:\Users\cvrsxd\Desktop\PROJECTS\ARQON_PROJECT\dev\scripts
+cd C:\Users\Bogdan\Documents\PROJECTS\PROJECTS\ARQON_PROJECT\dev\scripts
 .\build_variants.ps1
 ```
 
@@ -125,7 +125,7 @@ Output:
 
 ## Core CLI
 
-Run CLI commands from project root (`C:\Users\cvrsxd\Desktop\PROJECTS\ARQON_PROJECT\dev`) or pass an absolute `--config` path.
+Run CLI commands from project root (`C:\Users\Bogdan\Documents\PROJECTS\PROJECTS\ARQON_PROJECT\dev`) or pass an absolute `--config` path.
 
 ```powershell
 # Run full agent
@@ -271,7 +271,7 @@ powershell -ExecutionPolicy Bypass -File .\scripts\switch_mode.ps1 -Mode BROWSER
 1. Open `chrome://extensions`.
 2. Enable `Developer mode`.
 3. Click `Load unpacked`.
-4. Select `C:\Users\cvrsxd\Desktop\PROJECTS\ARQON_PROJECT\dev\browser-extension\chromium`.
+4. Select `C:\Users\Bogdan\Documents\PROJECTS\PROJECTS\ARQON_PROJECT\dev\browser-extension\chromium`.
 5. Open extension settings and set API endpoint/key if changed.
 6. Click `Test API`:
    - `Health: HTTP 200` means local API is reachable.
@@ -282,7 +282,7 @@ powershell -ExecutionPolicy Bypass -File .\scripts\switch_mode.ps1 -Mode BROWSER
 Run tray + auto-start agent:
 
 ```powershell
-cd C:\Users\cvrsxd\Desktop\PROJECTS\ARQON_PROJECT\dev\scripts
+cd C:\Users\Bogdan\Documents\PROJECTS\PROJECTS\ARQON_PROJECT\dev\scripts
 .\start_tray.ps1
 ```
 
@@ -299,7 +299,7 @@ Install startup tasks:
 ## MVP validation gate
 
 ```powershell
-cd C:\Users\cvrsxd\Desktop\PROJECTS\ARQON_PROJECT\dev\scripts
+cd C:\Users\Bogdan\Documents\PROJECTS\PROJECTS\ARQON_PROJECT\dev\scripts
 .\validate_mvp.ps1 -SkipBindCheck
 .\validate_mvp.ps1 -SkipBindCheck -StrictHealth
 ```
@@ -315,28 +315,28 @@ Scripts:
 Install/repair current project:
 
 ```powershell
-cd C:\Users\cvrsxd\Desktop\PROJECTS\ARQON_PROJECT\dev\scripts
+cd C:\Users\Bogdan\Documents\PROJECTS\PROJECTS\ARQON_PROJECT\dev\scripts
 .\install_arqon.ps1
 ```
 
 Update from another project snapshot/folder:
 
 ```powershell
-cd C:\Users\cvrsxd\Desktop\PROJECTS\ARQON_PROJECT\dev\scripts
+cd C:\Users\Bogdan\Documents\PROJECTS\PROJECTS\ARQON_PROJECT\dev\scripts
 .\update_arqon.ps1 -SourceRoot "C:\Temp\ARQON-Update"
 ```
 
 Manual rollback (latest backup):
 
 ```powershell
-cd C:\Users\cvrsxd\Desktop\PROJECTS\ARQON_PROJECT\dev\scripts
+cd C:\Users\Bogdan\Documents\PROJECTS\PROJECTS\ARQON_PROJECT\dev\scripts
 .\rollback_arqon.ps1
 ```
 
 Build release artifacts:
 
 ```powershell
-cd C:\Users\cvrsxd\Desktop\PROJECTS\ARQON_PROJECT\dev\scripts
+cd C:\Users\Bogdan\Documents\PROJECTS\PROJECTS\ARQON_PROJECT\dev\scripts
 .\build_release.ps1
 ```
 
@@ -352,3 +352,7 @@ python -m pytest -q
 ```
 
 Current status: unit tests passing.
+
+## Changelog
+
+See [CHANGELOG.md](CHANGELOG.md) for the full history of changes.

@@ -10,10 +10,10 @@ Use this file to pass ARQON changes from development to CI/CD.
 ## Repositories
 
 - Private admin repo (`dev`):
-  - Local path: `C:\Users\cvrsxd\Desktop\PROJECTS\ARQON_PROJECT\dev`
+  - Local path: `C:\Users\Bogdan\Documents\PROJECTS\PROJECTS\ARQON_PROJECT\dev`
   - Remote: `https://gitlab.com/reekonovv/arqon-dev.git`
 - Public user repo (`public`):
-  - Local path: `C:\Users\cvrsxd\Desktop\PROJECTS\ARQON_PROJECT\public`
+  - Local path: `C:\Users\Bogdan\Documents\PROJECTS\PROJECTS\ARQON_PROJECT\public`
   - Remote: `https://gitlab.com/reekonovv/arqon-dev-public.git`
 
 ## Sync Policy
