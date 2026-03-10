@@ -352,3 +352,7 @@ python -m pytest -q
 ```
 
 Current status: unit tests passing.
+
+## Changelog
+
+See [CHANGELOG.md](CHANGELOG.md) for the full history of changes.

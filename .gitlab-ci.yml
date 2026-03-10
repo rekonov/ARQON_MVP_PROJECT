@@ -59,6 +59,28 @@ self_check_smoke:
     - python -m arqon_guardian.cli --config config/default.yml config ensure-keys --config-mode refs
     - python -m arqon_guardian.cli --config config/default.yml self-check --skip-bind-check
 
+mypy_check:
+  stage: validate
+  rules:
+    - changes:
+        - src/**/*
+        - pyproject.toml
+        - requirements*.txt
+        - .gitlab-ci.yml
+  script:
+    - mypy src
+
+bandit_check:
+  stage: validate
+  rules:
+    - changes:
+        - src/**/*
+        - pyproject.toml
+        - requirements*.txt
+        - .gitlab-ci.yml
+  script:
+    - bandit -r src -ll
+
 promote_to_public:
   stage: promote
   image: alpine:3.20

@@ -10,10 +10,10 @@ Use this file to pass ARQON changes from development to CI/CD.
 ## Repositories
 
 - Private admin repo (`dev`):
-  - Local path: `C:\Users\cvrsxd\Desktop\PROJECTS\ARQON_PROJECT\dev`
+  - Local path: `C:\Users\Bogdan\Documents\PROJECTS\PROJECTS\ARQON_PROJECT\dev`
   - Remote: `https://gitlab.com/reekonovv/arqon-dev.git`
 - Public user repo (`public`):
-  - Local path: `C:\Users\cvrsxd\Desktop\PROJECTS\ARQON_PROJECT\public`
+  - Local path: `C:\Users\Bogdan\Documents\PROJECTS\PROJECTS\ARQON_PROJECT\public`
   - Remote: `https://gitlab.com/reekonovv/arqon-dev-public.git`
 
 ## Sync Policy
@@ -226,3 +226,59 @@ Commit message (preferred):
 Commit refs:
 - dev: `cd619c8`
 - public: `f304616`
+
+---
+
+## 2026-02-26 22:00 (local)
+
+Author: @developer
+Status: ready-for-check
+Target branch: main
+Repo scope: dev-only
+Type: chore
+
+Summary:
+- ruff --fix: auto-fixed import sorting (I001) across all modules
+- ruff format: reformatted 19 files for E501 (line too long >100)
+- Manual fix: UP038 isinstance tuple→union in config.py
+- Manual fix: E501 PowerShell string split in signature.py
+
+Changed files:
+- src/arqon_guardian/agent.py
+- src/arqon_guardian/audit.py
+- src/arqon_guardian/cli.py
+- src/arqon_guardian/config.py
+- src/arqon_guardian/crypto_signing.py
+- src/arqon_guardian/diagnostics.py
+- src/arqon_guardian/events.py
+- src/arqon_guardian/health.py
+- src/arqon_guardian/logging_setup.py
+- src/arqon_guardian/policy_pack.py
+- src/arqon_guardian/quarantine.py
+- src/arqon_guardian/reputation.py
+- src/arqon_guardian/retention.py
+- src/arqon_guardian/rules.py
+- src/arqon_guardian/runtime_lock.py
+- src/arqon_guardian/secret_store.py
+- src/arqon_guardian/signature.py
+- src/arqon_guardian/supervisor.py
+- src/arqon_guardian/update_pack.py
+- src/arqon_guardian/modules/download_monitor.py
+- src/arqon_guardian/modules/firewall_manager.py
+- src/arqon_guardian/modules/local_api.py
+- src/arqon_guardian/modules/network_privacy.py
+- src/arqon_guardian/modules/policy_updater.py
+- src/arqon_guardian/modules/privacy_hardening.py
+- src/arqon_guardian/modules/process_monitor.py
+
+Checks required:
+- compileall ✅
+- pytest ✅
+- ruff check ✅
+
+Notes/Risks:
+- Pure formatting/linting changes, no logic modifications
+- ruff not installed in venv (uses global Python 3.14 ruff) — DevOps should add to venv
+
+Commit message (preferred):
+- chore(lint): fix all ruff violations — import sort, line length, UP rules
